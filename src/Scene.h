@@ -12,6 +12,7 @@
 class Scene {
 public:
 
+	Shader* lineShader;
 	Shader* shader;
 	DebugSettings debugSettings;
 

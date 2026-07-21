@@ -162,6 +162,7 @@
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Lines.cpp" />
     <ClCompile Include="src\LiquidSimComponent.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Camera.h" />
@@ -175,17 +176,22 @@
     <ClCompile Include="src\shaderClass.cpp" />
     <ClCompile Include="src\stb.cpp" />
     <ClCompile Include="src\VAO.cpp" />
+    <ClCompile Include="src\VAO_line.cpp" />
     <ClCompile Include="src\VBO.cpp" />
+    <ClCompile Include="src\VBO_line.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extract_path_tracing.frag.sh" />
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
+    <None Include="shaders\line_default.frag" />
+    <None Include="shaders\line_default.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DebugWindow.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClInclude Include="src\Lines.h" />
     <ClInclude Include="src\LiquidSimComponent.h" />
     <ClInclude Include="src\DebugSettings.h" />
     <ClInclude Include="src\DebugWindow.h" />
@@ -203,7 +209,9 @@
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\shaderClass.h" />
     <ClInclude Include="src\VAO.h" />
+    <ClInclude Include="src\VAO_line.h" />
     <ClInclude Include="src\VBO.h" />
+    <ClInclude Include="src\VBO_line.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\brick.png" />

@@ -17,6 +17,7 @@ using namespace std;
 
 Scene::Scene(Camera& i_camera) : camera(i_camera) {
 
+	lineShader = new Shader{ "shaders/line_default.vert", "shaders/line_default.frag" };
 	shader = new Shader{ "shaders/default.vert", "shaders/default.frag" };
 	
 }
@@ -35,16 +36,24 @@ void Scene::Draw(GLFWwindow* window) {
 
 	Inputs(window);
 	camera.updateMatrix(*shader);
+	camera.updateMatrix(*lineShader);
+
+	shader->Activate();
+	int backgroundColorUniformLocation = glGetUniformLocation(shader->ID, "u_backgroundColor");
+	glUniform3f(backgroundColorUniformLocation, backgroundColor.r, backgroundColor.g, backgroundColor.b);
 
 	if (!debugSettings.pause) {
 
 		// CLEAR BACKGROUND
 		glViewport(0, 0, camera.width, camera.height);
-		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
+		glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		liquidSimComponent.Draw(*shader);
+		liquidSimComponent.Draw(*shader, *lineShader);
 
 	}
 

@@ -80,6 +80,8 @@ void Mesh::Draw(Shader& shader) {
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
+	VAO.Unbind();
+
 }
 
 bool Mesh::importObj(string fileName, glm::vec3 importColor) {

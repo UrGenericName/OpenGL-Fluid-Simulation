@@ -40,6 +40,7 @@ void Camera::updateMatrix(Shader& shader) {
 
 	cameraMatrix = projection * view;
 
+	shader.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "u_camMatrix"), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
