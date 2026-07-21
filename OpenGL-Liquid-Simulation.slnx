@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="OpenGL-Liquid-Simulation.vcxproj" Id="f783a735-c8b2-4cdf-b232-a22c0e2bb3f5" />
+</Solution>
