@@ -5,6 +5,7 @@ layout (location = 2) in vec4 aNormal;
 layout (location = 3) in vec2 aTexCoord;
 
 out vec3 color;
+out vec3 intersectionPoint;
 
 uniform mat4 u_camMatrix;
 uniform mat4 u_modelMatrix;
@@ -14,5 +15,6 @@ void main()
 	gl_Position = u_camMatrix * u_modelMatrix * aPos;
 
 	color = aColor.xyz;
+	intersectionPoint = aPos.xyz;
 
 }

@@ -14,33 +14,17 @@
 #include <glm/gtx/vector_angle.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
-Scene::Scene(Camera& i_camera) : camera(i_camera) {
+Scene::Scene(Camera& i_camera) : camera(i_camera) {}
 
-	lineShader = new Shader{ "shaders/line_default.vert", "shaders/line_default.frag" };
-	shader = new Shader{ "shaders/default.vert", "shaders/default.frag" };
-	
-}
-
-Scene::~Scene() {
-
-	for (Mesh* mesh : meshCollection) {
-		delete mesh;
-	}
-
-}
+Scene::~Scene() {}
 
 void Scene::Draw(GLFWwindow* window) {
 
-	auto start = chrono::high_resolution_clock::now();
+	auto start = high_resolution_clock::now();
 
 	Inputs(window);
-	camera.updateMatrix(*shader);
-	camera.updateMatrix(*lineShader);
-
-	shader->Activate();
-	int backgroundColorUniformLocation = glGetUniformLocation(shader->ID, "u_backgroundColor");
-	glUniform3f(backgroundColorUniformLocation, backgroundColor.r, backgroundColor.g, backgroundColor.b);
 
 	if (!debugSettings.pause) {
 
@@ -48,22 +32,31 @@ void Scene::Draw(GLFWwindow* window) {
 		glViewport(0, 0, camera.width, camera.height);
 		glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		liquidSimComponent.Draw(*shader, *lineShader);
+		shaderPipelineComponent.Draw(liquidSimComponent, camera);
 
 	}
 
-	auto end = chrono::high_resolution_clock::now();
+	auto end = high_resolution_clock::now();
 	auto raw_duration = end - start;
-	chrono::duration<double, milli> ms_double = raw_duration;
+	duration<double, milli> ms_double = raw_duration;
 	frameTime = ms_double.count();
 
 	// WINDOW NAME
 	setWindowTitle(window, frameTime);
+
+}
+
+void Scene::setWindowTitle(GLFWwindow* window, double frameTime) {
+
+	string windowName = "Liquid Simulation   FPS: " + (to_string(static_cast<int>(1000 / frameTime)) + "      ").substr(0, 6) + "\t";
+
+	glfwSetWindowTitle(window, windowName.c_str());
 
 }
 
@@ -148,13 +141,5 @@ void Scene::Inputs(GLFWwindow* window) {
 		}
 
 	}
-
-}
-
-void Scene::setWindowTitle(GLFWwindow* window, double frameTime) {
-
-	string windowName = "Liquid Simulation   FPS: " + (to_string(static_cast<int>(1000 / frameTime)) + "      ").substr(0, 6) + "\t";
-
-	glfwSetWindowTitle(window, windowName.c_str());
 
 }

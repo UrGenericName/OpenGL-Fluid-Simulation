@@ -174,6 +174,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\shaderClass.cpp" />
+    <ClCompile Include="src\ShaderPipelineComponent.cpp" />
     <ClCompile Include="src\stb.cpp" />
     <ClCompile Include="src\VAO.cpp" />
     <ClCompile Include="src\VAO_line.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\DebugWindow.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClInclude Include="src\ShaderPipelineComponent.h" />
     <ClInclude Include="src\Lines.h" />
     <ClInclude Include="src\LiquidSimComponent.h" />
     <ClInclude Include="src\DebugSettings.h" />

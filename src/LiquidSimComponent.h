@@ -5,8 +5,12 @@
 #include "Mesh.h"
 #include "Lines.h"
 
+class ShaderPipelineComponent;
+
 class LiquidSimComponent {
 public:
+
+	friend ShaderPipelineComponent;
 
 	LiquidSimComponent();
 	~LiquidSimComponent();

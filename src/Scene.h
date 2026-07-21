@@ -8,19 +8,17 @@
 #include "Camera.h"
 #include "DebugSettings.h"
 #include "LiquidSimComponent.h"
+#include "ShaderPipelineComponent.h"
 
 class Scene {
 public:
 
-	Shader* lineShader;
-	Shader* shader;
-	DebugSettings debugSettings;
-
+	ShaderPipelineComponent shaderPipelineComponent;
 	LiquidSimComponent liquidSimComponent;
 
-	Camera& camera;
+	DebugSettings debugSettings;
 
-	std::vector<Mesh*> meshCollection;
+	Camera& camera;
 	glm::vec3 backgroundColor = { 0.17f, 0.17f, 0.17f };
 
 	Scene(Camera& i_camera);
@@ -33,7 +31,7 @@ private:
 
 	double frameTime = 0;
 
-	void Inputs(GLFWwindow* window);
 	void setWindowTitle(GLFWwindow* window, double frameTime);
+	void Inputs(GLFWwindow* window);
 
 };
