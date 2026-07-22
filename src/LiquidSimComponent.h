@@ -15,7 +15,6 @@ public:
 	LiquidSimComponent();
 	~LiquidSimComponent();
 
-	void Draw(Shader& shader, Shader& lineShader);
 	float getWidth() { return width; };
 	float getLength() { return length; };
 	float getHeight() { return height; };

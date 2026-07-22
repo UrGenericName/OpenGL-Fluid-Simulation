@@ -64,10 +64,3 @@ void LiquidSimComponent::Resize(float width, float length, float height) {
 	lines.updateBuffers();
 
 }
-
-void LiquidSimComponent::Draw(Shader& shader, Shader& lineShader) {
-
-	cage.Draw(shader);
-	lines.Draw(lineShader);
-
-}

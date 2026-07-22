@@ -15,6 +15,6 @@ void main()
 	gl_Position = u_camMatrix * u_modelMatrix * aPos;
 
 	color = aColor.xyz;
-	intersectionPoint = aPos.xyz;
+	intersectionPoint = (u_modelMatrix * aPos).xyz;
 
 }
