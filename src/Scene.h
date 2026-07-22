@@ -13,7 +13,6 @@
 class Scene {
 public:
 
-	ShaderPipelineComponent shaderPipelineComponent;
 	LiquidSimComponent liquidSimComponent;
 
 	DebugSettings debugSettings;

@@ -2,10 +2,11 @@
 
 #include "LiquidSimComponent.h"
 
+using namespace glm;
+
 LiquidSimComponent::LiquidSimComponent() {
 
 	Resize(1.0f, 1.0f, 1.0f);
-	points.push_back(glm::vec3(0, 0, 0));
 
 }
 
@@ -33,17 +34,17 @@ void LiquidSimComponent::Resize(float width, float length, float height) {
 	float minZ = -(height / 2.0f);
 
 	lines.vertices = {
-		LineVertex{ glm::vec4(maxX, minY, minZ, 0.0f),		glm::vec4(1.0f) },
-		LineVertex{ glm::vec4(minX, minY, minZ, 0.0f),		glm::vec4(1.0f) },
+		LineVertex{ vec4(maxX, minY, minZ, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minX, minY, minZ, 0.0f),		vec4(1.0f) },
 
-		LineVertex{ glm::vec4(maxX, maxY, minZ, 0.0f),		glm::vec4(1.0f) },
-		LineVertex{ glm::vec4(minX, maxY, minZ, 0.0f),		glm::vec4(1.0f) },
+		LineVertex{ vec4(maxX, maxY, minZ, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minX, maxY, minZ, 0.0f),		vec4(1.0f) },
 
-		LineVertex{ glm::vec4(maxX, minY, maxZ, 0.0f),		glm::vec4(1.0f) },
-		LineVertex{ glm::vec4(minX, minY, maxZ, 0.0f),		glm::vec4(1.0f) },
+		LineVertex{ vec4(maxX, minY, maxZ, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minX, minY, maxZ, 0.0f),		vec4(1.0f) },
 
-		LineVertex{ glm::vec4(maxX, maxY, maxZ, 0.0f),		glm::vec4(1.0f) },
-		LineVertex{ glm::vec4(minX, maxY, maxZ, 0.0f),		glm::vec4(1.0f) }
+		LineVertex{ vec4(maxX, maxY, maxZ, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minX, maxY, maxZ, 0.0f),		vec4(1.0f) }
 	};
 
 	lines.indices = { 
@@ -62,5 +63,25 @@ void LiquidSimComponent::Resize(float width, float length, float height) {
 	};
 
 	lines.updateBuffers();
+
+	// FILL VECTOR
+	particles.clear();
+	for (float x = minX; x <= maxX; x += 0.5f) {
+		for (float y = minY; y <= maxY; y += 0.5f) {
+			for (float z = minZ; z <= maxZ; z += 0.5f) {
+
+				particles.push_back(vec4(x, y, z, 1.0f));
+
+			}
+		}
+	}
+
+	shaderPipelineComponent.updateParticleSSBO(particles);
+
+}
+
+void LiquidSimComponent::Draw(Camera& camera) {
+
+	shaderPipelineComponent.Draw(camera, cage, lines, particles.size(), vec3(width, length, height));
 
 }

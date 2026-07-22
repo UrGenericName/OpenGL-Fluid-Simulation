@@ -4,13 +4,12 @@
 #include <glm/glm.hpp>
 #include "Mesh.h"
 #include "Lines.h"
-
-class ShaderPipelineComponent;
+#include "ShaderPipelineComponent.h"
 
 class LiquidSimComponent {
 public:
 
-	friend ShaderPipelineComponent;
+	ShaderPipelineComponent shaderPipelineComponent;
 
 	LiquidSimComponent();
 	~LiquidSimComponent();
@@ -20,6 +19,8 @@ public:
 	float getHeight() { return height; };
 	void Resize(float width, float length, float height);
 
+	void Draw(Camera& camera);
+
 private:
 
 	float width, length, height;
@@ -27,6 +28,6 @@ private:
 	Lines lines;
 	Mesh cage{ "models/cage.obj" };
 
-	std::vector<glm::vec3> points;
+	std::vector<glm::vec4> particles;
 
 };

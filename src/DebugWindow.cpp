@@ -72,17 +72,15 @@ void DebugWindow::drawRenderTab(Scene& scene) {
 
 		TableNextRow();
 		TableNextColumn();
-		SliderFloat("Width", &width, 0.0f, MAX_CAGE_SIZE);
+		if (SliderFloat("Width", &width, 0.0f, MAX_CAGE_SIZE)) scene.liquidSimComponent.Resize(width, length, height);
 
 		TableNextRow();
 		TableNextColumn();
-		SliderFloat("Length", &length, 0.0f, MAX_CAGE_SIZE);
+		if (SliderFloat("Length", &length, 0.0f, MAX_CAGE_SIZE)) scene.liquidSimComponent.Resize(width, length, height);
 
 		TableNextRow();
 		TableNextColumn();
-		SliderFloat("Height", &height, 0.0f, MAX_CAGE_SIZE );
-
-		scene.liquidSimComponent.Resize(width, length, height);
+		if (SliderFloat("Height", &height, 0.0f, MAX_CAGE_SIZE)) scene.liquidSimComponent.Resize(width, length, height);
 
 		EndTable();
 	}
