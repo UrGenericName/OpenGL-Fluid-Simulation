@@ -22,7 +22,7 @@ void drawSphere(vec3 orig);
 float distBetweenPointAndLine(vec3 P, vec3 A, vec3 B);
 
 #define CAGE_ALPHA 0.2f
-#define SPHERE_RADIUS 0.125f
+#define SPHERE_RADIUS 0.125f / 4.f
 
 
 

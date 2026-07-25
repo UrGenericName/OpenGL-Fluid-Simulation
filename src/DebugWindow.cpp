@@ -66,21 +66,21 @@ void DebugWindow::drawRenderTab(Scene& scene) {
 		TableSetupColumn("Physics Settings");
 		TableHeadersRow();
 
-		float width = scene.liquidSimComponent.getWidth();
-		float length = scene.liquidSimComponent.getLength();
-		float height = scene.liquidSimComponent.getHeight();
+		float width = scene.fluidSimComponent.getWidth();
+		float length = scene.fluidSimComponent.getLength();
+		float height = scene.fluidSimComponent.getHeight();
 
 		TableNextRow();
 		TableNextColumn();
-		if (SliderFloat("Width", &width, 0.0f, MAX_CAGE_SIZE)) scene.liquidSimComponent.Resize(width, length, height);
+		if (SliderFloat("Width", &width, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.Resize(width, length, height);
 
 		TableNextRow();
 		TableNextColumn();
-		if (SliderFloat("Length", &length, 0.0f, MAX_CAGE_SIZE)) scene.liquidSimComponent.Resize(width, length, height);
+		if (SliderFloat("Length", &length, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.Resize(width, length, height);
 
 		TableNextRow();
 		TableNextColumn();
-		if (SliderFloat("Height", &height, 0.0f, MAX_CAGE_SIZE)) scene.liquidSimComponent.Resize(width, length, height);
+		if (SliderFloat("Height", &height, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.Resize(width, length, height);
 
 		EndTable();
 	}

@@ -38,7 +38,7 @@ void Scene::Draw(GLFWwindow* window) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		liquidSimComponent.Draw(camera);
+		fluidSimComponent.Draw(camera);
 
 	}
 
@@ -54,7 +54,7 @@ void Scene::Draw(GLFWwindow* window) {
 
 void Scene::setWindowTitle(GLFWwindow* window, double frameTime) {
 
-	string windowName = "Liquid Simulation   FPS: " + (to_string(static_cast<int>(1000 / frameTime)) + "      ").substr(0, 6) + "\t";
+	string windowName = "Fluid Simulation   FPS: " + (to_string(static_cast<int>(1000 / frameTime)) + "      ").substr(0, 6) + "\t";
 
 	glfwSetWindowTitle(window, windowName.c_str());
 

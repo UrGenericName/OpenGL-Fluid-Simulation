@@ -1,18 +1,18 @@
 #pragma once
 
-#include "LiquidSimComponent.h"
+#include "FluidSimComponent.h"
 
 using namespace glm;
 
-LiquidSimComponent::LiquidSimComponent() {
+FluidSimComponent::FluidSimComponent() {
 
 	Resize(1.0f, 1.0f, 1.0f);
 
 }
 
-LiquidSimComponent::~LiquidSimComponent() {}
+FluidSimComponent::~FluidSimComponent() {}
 
-void LiquidSimComponent::Resize(float width, float length, float height) {
+void FluidSimComponent::Resize(float width, float length, float height) {
 
 	this->width = width;
 	this->length = length;
@@ -80,7 +80,7 @@ void LiquidSimComponent::Resize(float width, float length, float height) {
 
 }
 
-void LiquidSimComponent::Draw(Camera& camera) {
+void FluidSimComponent::Draw(Camera& camera) {
 
 	shaderPipelineComponent.Draw(camera, cage, lines, particles.size(), vec3(width, length, height));
 

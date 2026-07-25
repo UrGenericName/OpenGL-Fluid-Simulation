@@ -22,7 +22,7 @@
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{F783A735-C8B2-4CDF-B232-A22C0E2BB3F5}</ProjectGuid>
-    <RootNamespace>OpenGL_Liquid_Simulation</RootNamespace>
+    <RootNamespace>OpenGL_Fluid_Simulation</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -163,7 +163,7 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Lines.cpp" />
-    <ClCompile Include="src\LiquidSimComponent.cpp" />
+    <ClCompile Include="src\FluidSimComponent.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Camera.h" />
     <ClCompile Include="src\EBO.cpp" />
@@ -182,7 +182,6 @@
     <ClCompile Include="src\VBO_line.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="extract_path_tracing.frag.sh" />
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
     <None Include="shaders\line_default.frag" />
@@ -194,7 +193,7 @@
     </ClCompile>
     <ClInclude Include="src\ShaderPipelineComponent.h" />
     <ClInclude Include="src\Lines.h" />
-    <ClInclude Include="src\LiquidSimComponent.h" />
+    <ClInclude Include="src\FluidSimComponent.h" />
     <ClInclude Include="src\DebugSettings.h" />
     <ClInclude Include="src\DebugWindow.h" />
     <ClInclude Include="imgui\backends\imgui_impl_glfw.h" />

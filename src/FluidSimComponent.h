@@ -6,13 +6,13 @@
 #include "Lines.h"
 #include "ShaderPipelineComponent.h"
 
-class LiquidSimComponent {
+class FluidSimComponent {
 public:
 
 	ShaderPipelineComponent shaderPipelineComponent;
 
-	LiquidSimComponent();
-	~LiquidSimComponent();
+	FluidSimComponent();
+	~FluidSimComponent();
 
 	float getWidth() { return width; };
 	float getLength() { return length; };

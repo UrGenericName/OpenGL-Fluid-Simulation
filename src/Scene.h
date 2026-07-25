@@ -7,13 +7,13 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "DebugSettings.h"
-#include "LiquidSimComponent.h"
+#include "FluidSimComponent.h"
 #include "ShaderPipelineComponent.h"
 
 class Scene {
 public:
 
-	LiquidSimComponent liquidSimComponent;
+	FluidSimComponent fluidSimComponent;
 
 	DebugSettings debugSettings;
 
