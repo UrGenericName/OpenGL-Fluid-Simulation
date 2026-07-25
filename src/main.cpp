@@ -6,8 +6,6 @@
 #define WIDTH 1400
 #define HEIGHT 800
 
-//
-
 GLFWwindow* initGLFW();
 void configOpenGL(GLFWwindow* window);
 
