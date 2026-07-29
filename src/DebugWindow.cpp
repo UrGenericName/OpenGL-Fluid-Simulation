@@ -72,9 +72,11 @@ void DebugWindow::drawRenderTab(Scene& scene) {
 
 		TableNextRow();
 		TableNextColumn();
-
 		float particleDensity = scene.fluidSimComponent.GetParticleDensity();
 		if (SliderFloat("Particle Density", &particleDensity, 0.0f, 1.0f)) scene.fluidSimComponent.SetParticleDensity(particleDensity);
+
+		TableNextColumn();
+		Checkbox("Pause", &scene.fluidSimComponent.physicsPause);
 
 		EndTable();
 	}

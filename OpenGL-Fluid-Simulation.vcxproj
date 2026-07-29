@@ -182,10 +182,12 @@
     <ClCompile Include="src\VBO_line.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\default.frag" />
-    <None Include="shaders\default.vert" />
-    <None Include="shaders\line_default.frag" />
-    <None Include="shaders\line_default.vert" />
+    <None Include="shaders\mesh.frag" />
+    <None Include="shaders\mesh.vert" />
+    <None Include="shaders\particle.frag" />
+    <None Include="shaders\particle.vert" />
+    <None Include="shaders\line.frag" />
+    <None Include="shaders\line.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DebugWindow.cpp">

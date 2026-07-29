@@ -7,28 +7,42 @@ using namespace glm;
 
 ShaderPipelineComponent::ShaderPipelineComponent() {
 
-	defaultShader = new Shader{ "shaders/default.vert", "shaders/default.frag" };
-	lineShader = new Shader{ "shaders/line_default.vert", "shaders/line_default.frag" };
+	meshShader = new Shader{ "shaders/mesh.vert", "shaders/mesh.frag" };
+	particleShader = new Shader{ "shaders/particle.vert", "shaders/particle.frag" };
+	lineShader = new Shader{ "shaders/line.vert", "shaders/line.frag" };
 	generateParticleSSBO();
 
 }
 
 ShaderPipelineComponent::~ShaderPipelineComponent() {
 
-	defaultShader->Delete();
+	particleShader->Delete();
 	lineShader->Delete();
 	deleteParticleSSBO();
 
 }
 
-void ShaderPipelineComponent::Draw(Camera& camera, Mesh& innerCage, Mesh& outerCage, Lines& innerBoundingBox, Lines& outerBoundingBox, unsigned int particleCount) {
+void ShaderPipelineComponent::Draw_Mesh(Camera& camera, Mesh& mesh) {
 
-	camera.updateMatrix(*defaultShader);
+	camera.updateMatrix(*meshShader);
+	generateMeshShaderUniforms(camera);
+
+	mesh.Draw(*meshShader);
+
+}
+
+void ShaderPipelineComponent::Draw_Particles(Camera& camera, Mesh& innerCage, Mesh& outerCage, unsigned int particleCount) {
+
+	camera.updateMatrix(*particleShader);
+	generateParticleShaderUniforms(camera, particleCount, outerCage.scale);
+
+	outerCage.Draw(*particleShader);
+}
+
+void ShaderPipelineComponent::Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox) {
+
 	camera.updateMatrix(*lineShader);
 
-	generateDefaultShaderUniforms(camera, particleCount, outerCage.scale);
-
-	outerCage.Draw(*defaultShader);
 	innerBoundingBox.Draw(*lineShader);
 	outerBoundingBox.Draw(*lineShader);
 
@@ -72,17 +86,26 @@ void ShaderPipelineComponent::deleteParticleSSBO() {
 
 }
 
-void ShaderPipelineComponent::generateDefaultShaderUniforms(Camera& camera, unsigned int particleCount, vec3 cageSize) {
+void ShaderPipelineComponent::generateMeshShaderUniforms(Camera& camera) {
 
-	defaultShader->Activate();
+	meshShader->Activate();
 
-	int camPosUniformLocation = glGetUniformLocation(defaultShader->ID, "u_camPos");
+	int camPosUniformLocation = glGetUniformLocation(meshShader->ID, "u_camPos");
 	glUniform3f(camPosUniformLocation, camera.Position.x, camera.Position.y, camera.Position.z);
 
-	int particleCountUniformLocation = glGetUniformLocation(defaultShader->ID, "u_particleCount");
+}
+
+void ShaderPipelineComponent::generateParticleShaderUniforms(Camera& camera, unsigned int particleCount, vec3 cageSize) {
+
+	particleShader->Activate();
+
+	int camPosUniformLocation = glGetUniformLocation(particleShader->ID, "u_camPos");
+	glUniform3f(camPosUniformLocation, camera.Position.x, camera.Position.y, camera.Position.z);
+
+	int particleCountUniformLocation = glGetUniformLocation(particleShader->ID, "u_particleCount");
 	glUniform1ui(particleCountUniformLocation, particleCount);
 
-	int cageSizeUniformLocation = glGetUniformLocation(defaultShader->ID, "u_cageSize");
+	int cageSizeUniformLocation = glGetUniformLocation(particleShader->ID, "u_cageSize");
 	glUniform3f(cageSizeUniformLocation, cageSize.x, cageSize.y, cageSize.z);
 
 }

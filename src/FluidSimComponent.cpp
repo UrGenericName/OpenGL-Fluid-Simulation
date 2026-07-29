@@ -6,6 +6,8 @@ using namespace glm;
 
 FluidSimComponent::FluidSimComponent() {
 
+	ball.scale = vec3(2.0f);
+
 	innerBoundingBox.tint = innerBoundingBoxColor;
 	outerBoundingBox.tint = outerBoundingBoxColor;
 
@@ -66,13 +68,15 @@ void FluidSimComponent::FillInnerCage() {
 
 	// FILL VECTOR
 	particles.clear();
+	particlePosSSBO.clear();
 	for (float x = minBounds.x; x <= maxBounds.x; x += (particleDensity / innerCage.scale.x) ) {
 		for (float y = minBounds.y; y <= maxBounds.y; y += (particleDensity / innerCage.scale.y) ) {
 			for (float z = minBounds.z; z <= maxBounds.z; z += (particleDensity / innerCage.scale.z) ) {
 
-				Particle temp{ vec3{x, y, z }, vec3{0.0f} };
+				Particle temp{ vec3{x, y, z }, vec3{0.0f, 1.0f, 0.0f} };
 				temp.position = vec3(innerCage.getModelMatrix() * vec4(temp.position, 1.0f));
 				particles.push_back(temp);
+				particlePosSSBO.push_back(vec4(temp.position, 1.0f));
 
 			}
 		}
@@ -82,37 +86,59 @@ void FluidSimComponent::FillInnerCage() {
 
 void FluidSimComponent::Draw(Camera& camera) {
 
-	SimulateTimeStep(0.001f);
-
-	// CREATE SSBO POS VECTOR
-	vector<vec4> particlePosSSBO;
-
-	for (const Particle& p : particles) {
-		particlePosSSBO.push_back(vec4{ p.position, 1.0f });
-	}
+	if (!physicsPause) SimulateTimeStep(0.0001f);
 
 	shaderPipelineComponent.updateParticleSSBO(particlePosSSBO);
-
-	shaderPipelineComponent.Draw(camera, innerCage, outerCage, innerBoundingBox, outerBoundingBox, particles.size());
+	shaderPipelineComponent.Draw_Particles(camera, innerCage, outerCage, particles.size());
+	shaderPipelineComponent.Draw_BoundingBoxes(camera, innerBoundingBox, outerBoundingBox);
+	shaderPipelineComponent.Draw_Mesh(camera, ball);
 
 }
 
 void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
-	for (Particle& particle : particles) {
+	for (int i = 0; i < particles.size(); ++i) {
 
-		particle.velocity += vec3(0.0f, 0.0f, -9.8 * 0.05f);
+		Particle& particle = particles[i];
+
+		// GRAVITY
+		particle.velocity += vec3(0.0f, 0.0f, -9.8);
+
+
 
 		vec3 newPosition = particle.position + particle.velocity * timeStep;
 
+		// CAGE COLLISION CHECK
 		vec3 minBounds = { -outerCage.scale.x / 2.0f, -outerCage.scale.y / 2.0f, -outerCage.scale.z / 2.0f };
 		vec3 maxBounds = { outerCage.scale.x / 2.0f, outerCage.scale.y / 2.0f, outerCage.scale.z / 2.0f };
 
-		if (!(minBounds.x < newPosition.x && maxBounds.x > newPosition.x)) particle.velocity *= -1.0f;
-		if (!(minBounds.y < newPosition.y && maxBounds.y > newPosition.y)) particle.velocity *= -1.0f;
-		if (!(minBounds.z < newPosition.z && maxBounds.z > newPosition.z)) particle.velocity *= -1.0f;
+		for (int component = 0; component < 3; ++component) {
 
+			if (!(minBounds[component] < newPosition[component] && maxBounds[component] > newPosition[component]))	// if new position is outside bounds, redirect velocity
+			{
+				vec3 normal{ 0.0f };
+				normal[component] = 1.0f;
+
+				particle.velocity = reflect(particle.velocity, normal);
+				particle.velocity *= 0.8f; // energy lost
+
+			}
+
+		}
+
+		// SPHERE COLLISION CHECK
+		if (distance(particle.position, ball.position) < 2.0f) {
+
+			vec3 normal = normalize(particle.position - ball.position);
+
+			particle.velocity = reflect(particle.velocity, normal);
+			particle.velocity *= 0.8f; // energy lost
+
+		}
+
+		// UPDATE POSITION
 		particle.position += particle.velocity * timeStep;
+		particlePosSSBO[i] = vec4(particle.position, 1.0f);
 
 	}
 

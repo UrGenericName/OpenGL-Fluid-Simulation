@@ -107,10 +107,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\default.vert">
+    <None Include="shaders\particle.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="shaders\default.frag">
+    <None Include="shaders\particle.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="models\room\white_walls.obj">
@@ -146,10 +146,16 @@
     <None Include="models\room\sphere.obj">
       <Filter>Resource Files\Models</Filter>
     </None>
-    <None Include="shaders\line_default.vert">
+    <None Include="shaders\line.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="shaders\line_default.frag">
+    <None Include="shaders\line.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\mesh.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\mesh.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

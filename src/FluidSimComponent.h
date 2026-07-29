@@ -18,6 +18,8 @@ struct Particle {
 class FluidSimComponent {
 public:
 
+	bool physicsPause = true;
+
 	ShaderPipelineComponent shaderPipelineComponent;
 
 	FluidSimComponent();
@@ -51,7 +53,10 @@ private:
 	Mesh innerCage{ "models/cage.obj" };
 	Mesh outerCage{ "models/cage.obj" };
 
+	Mesh ball{ "models/sphere.obj", vec3(1.0f, 0.3f, 0.3f) };
+
 	std::vector<Particle> particles;
+	std::vector<vec4> particlePosSSBO;
 
 	void FillInnerCage();
 	void SimulateTimeStep(float timeStep);
