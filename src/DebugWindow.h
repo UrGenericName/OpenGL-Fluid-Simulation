@@ -14,7 +14,7 @@
 
 #include "DebugSettings.h"
 
-#define MAX_CAGE_SIZE 32.0f
+#define MAX_CAGE_SIZE 16.0f
 
 class DebugWindow {
 public:

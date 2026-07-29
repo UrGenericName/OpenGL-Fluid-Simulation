@@ -48,7 +48,7 @@ void drawSphere(vec3 orig) {
 		float y_normalized = (orig.y + u_cageSize.y / 2.0f) / (u_cageSize.y * 2.0f);
 		float z_normalized = (orig.z + u_cageSize.z / 2.0f) / (u_cageSize.z * 2.0f);
 
-		FragColor = vec4( x_normalized, y_normalized, z_normalized, 1.0f);
+		FragColor = vec4( 1.0f, 1.0f, 1.0f, 1.0f);
 
 	}
 

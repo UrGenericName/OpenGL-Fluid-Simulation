@@ -6,6 +6,15 @@
 #include "Lines.h"
 #include "ShaderPipelineComponent.h"
 
+using namespace glm;
+
+struct Particle {
+
+	vec3 position;
+	vec3 velocity;
+
+};
+
 class FluidSimComponent {
 public:
 
@@ -14,20 +23,25 @@ public:
 	FluidSimComponent();
 	~FluidSimComponent();
 
-	float getWidth() { return width; };
-	float getLength() { return length; };
-	float getHeight() { return height; };
-	void Resize(float width, float length, float height);
+	vec3 getInnerCageSize() { return vec3 { innerCage.scale.x, innerCage.scale.y, innerCage.scale.z }; };
+	vec3 getOuterCageSize() { return vec3 { outerCage.scale.x, outerCage.scale.y, outerCage.scale.z }; }
+
+	void ResizeInnerCage(float width, float length, float height);
+	void ResizeOuterCage(float width, float length, float height);
 
 	void Draw(Camera& camera);
 
 private:
 
-	float width, length, height;
+	const vec3 innerBoundingBoxColor { 0.0f, 1.0f, 1.0f };
+	const vec3 outerBoundingBoxColor { 1.0f, 1.0f, 1.0f };
 
-	Lines lines;
-	Mesh cage{ "models/cage.obj" };
+	Lines innerBoundingBox, outerBoundingBox;
+	Mesh innerCage{ "models/cage.obj" };
+	Mesh outerCage{ "models/cage.obj" };
 
-	std::vector<glm::vec4> particles;
+	std::vector<Particle> particles;
+
+	void simulateTimeStep(float timeStep);
 
 };

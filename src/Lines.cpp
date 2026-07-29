@@ -2,8 +2,19 @@
 
 #include "Lines.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
+using namespace glm;
+
 Lines::Lines() {
 	LineSetup();
+}
+
+Lines::Lines(Mesh& mesh) {
+
+	LineSetup();
+	generateFromBoundingBox(mesh);
+
 }
 
 Lines::~Lines() {}
@@ -36,14 +47,140 @@ void Lines::Draw(Shader& shader) {
 	shader.Activate();
 	VAO.Bind();
 
+	GLuint tintLoc = glGetUniformLocation(shader.ID, "u_tint");
+	glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+
+	GLuint modelMatrixLoc = glGetUniformLocation(shader.ID, "u_modelMatrix");
+	glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, glm::value_ptr(getModelMatrix()));
+
 	glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
 
 	VAO.Unbind();
+}
+
+void Lines::generateFromBoundingBox(Mesh& mesh) {
+
+	vec3 minBounds{ INFINITY };
+	vec3 maxBounds{ -INFINITY };
+
+	// FETCH BOUNDS
+	for (Vertex& vertex : mesh.vertices) {
+
+		if (vertex.position.x < minBounds.x) minBounds.x = vertex.position.x;
+		if (vertex.position.y < minBounds.y) minBounds.y = vertex.position.y;
+		if (vertex.position.z < minBounds.z) minBounds.z = vertex.position.z;
+
+		if (vertex.position.x > maxBounds.x) maxBounds.x = vertex.position.x;
+		if (vertex.position.y > maxBounds.y) maxBounds.y = vertex.position.y;
+		if (vertex.position.z > maxBounds.z) maxBounds.z = vertex.position.z;
+
+	}
+
+	// SET LINE VERTICES
+	vertices = {
+		LineVertex{ vec4(maxBounds.x, minBounds.y, minBounds.z, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minBounds.x, minBounds.y, minBounds.z, 0.0f),		vec4(1.0f) },
+
+		LineVertex{ vec4(maxBounds.x, maxBounds.y, minBounds.z, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minBounds.x, maxBounds.y, minBounds.z, 0.0f),		vec4(1.0f) },
+
+		LineVertex{ vec4(maxBounds.x, minBounds.y, maxBounds.z, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minBounds.x, minBounds.y, maxBounds.z, 0.0f),		vec4(1.0f) },
+
+		LineVertex{ vec4(maxBounds.x, maxBounds.y, maxBounds.z, 0.0f),		vec4(1.0f) },
+		LineVertex{ vec4(minBounds.x, maxBounds.y, maxBounds.z, 0.0f),		vec4(1.0f) }
+	};
+
+	indices = {
+		0, 1,
+		2, 3,
+		4, 5,
+		6, 7,
+		0, 2,
+		0, 4,
+		1, 3,
+		1, 5,
+		2, 6,
+		3, 7,
+		4, 6,
+		5, 7
+	};
+
+	position = mesh.position;
+	rotation = mesh.rotation;
+	scale = mesh.scale;
+
 }
 
 void Lines::updateBuffers() {
 
 	VBOptr->Update(vertices); // updates the vertices stored in the VBO
 	EBOptr->Update(indices); // updates the indices stored in the EBO
+
+}
+
+mat4 Lines::getModelMatrix() {
+
+	return getTranslationMatrix() * getRotationMatrix() * getScaleMatrix();
+}
+
+mat4 Lines::getTranslationMatrix() {
+
+	mat4 translationMatrix{
+		1.0f,		0.0f,		0.0f,		0.0f,
+		0.0f,		1.0f,		0.0f,		0.0f,
+		0.0f,		0.0f,		1.0f,		0.0f,
+		position.x,	position.y,	position.z,	1.0f
+	};
+
+	return translationMatrix;
+}
+
+mat4 Lines::getRotationMatrix() {
+
+	float cosTheta, sinTheta;
+
+	cosTheta = cos(rotation.x);
+	sinTheta = sin(rotation.x);
+	mat4 rotationX{
+		1.0f,	0.0f,		0.0f,		0.0f,
+		0.0f,	cosTheta,	sinTheta,	0.0f,
+		0.0f,	-sinTheta,	cosTheta,	0.0f,
+		0.0f,	0.0f,		0.0f,		1.0f
+	};
+
+	cosTheta = cos(rotation.y);
+	sinTheta = sin(rotation.y);
+	mat4 rotationY{
+		cosTheta,	0.0f,	-sinTheta,	0.0f,
+		0.0f,		1.0f,	0.0f,		0.0f,
+		sinTheta,	0.0f,	cosTheta,	0.0f,
+		0.0f,		0.0f,	0.0f,		1.0f,
+	};
+
+	cosTheta = cos(rotation.z);
+	sinTheta = sin(rotation.z);
+	mat4 rotationZ{
+		cosTheta,	sinTheta,	0.0f,	0.0f,
+		-sinTheta,	cosTheta,	0.0f,	0.0f,
+		0.0f,		0.0f,		1.0f,	0.0f,
+		0.0f,		0.0f,		0.0f,	1.0f
+	};
+
+	mat4 rotationMatrix{ rotationZ * rotationY * rotationX };
+
+	return rotationMatrix;
+}
+
+mat4 Lines::getScaleMatrix() {
+
+	mat4 scaleMatrix{
+		scale.x,	0.0f,		0.0f,		0.0f,
+		0.0f,		scale.y,	0.0f,		0.0f,
+		0.0f,		0.0f,		scale.z,	0.0f,
+		0.0f,		0.0f,		0.0f,		1.0f
+	};
+
+	return scaleMatrix;
 
 }

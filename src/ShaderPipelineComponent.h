@@ -15,7 +15,7 @@ public:
 	ShaderPipelineComponent();
 	~ShaderPipelineComponent();
 
-	void Draw(Camera& camera, Mesh& cage, Lines& lines, unsigned int particleCount, glm::vec3 cageSize);
+	void Draw(Camera& camera, Mesh& innerCage, Mesh& outerCage, Lines& innerBoundingBox, Lines& outerBoundingBox, unsigned int particleCount);
 
 	void generateParticleSSBO();
 	void updateParticleSSBO(std::vector<glm::vec4> particles);

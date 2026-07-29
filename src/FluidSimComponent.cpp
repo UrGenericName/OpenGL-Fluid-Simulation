@@ -6,82 +6,89 @@ using namespace glm;
 
 FluidSimComponent::FluidSimComponent() {
 
-	Resize(1.0f, 1.0f, 1.0f);
+	innerBoundingBox.tint = innerBoundingBoxColor;
+	outerBoundingBox.tint = outerBoundingBoxColor;
+
+	ResizeInnerCage(1.0f, 1.0f, 1.0f);
+	ResizeOuterCage(2.0f, 2.0f, 2.0f);
 
 }
 
 FluidSimComponent::~FluidSimComponent() {}
 
-void FluidSimComponent::Resize(float width, float length, float height) {
+void FluidSimComponent::ResizeInnerCage(float width, float length, float height) {
 
-	this->width = width;
-	this->length = length;
-	this->height = height;
+	innerCage.scale.x = width;
+	innerCage.scale.y = length;
+	innerCage.scale.z = height;
 
-	cage.scale.x = width;
-	cage.scale.y = length;
-	cage.scale.z = height;
+	innerBoundingBox.generateFromBoundingBox(innerCage);
+	innerBoundingBox.updateBuffers();
 
-
-
-	float maxX = width / 2.0f;
-	float minX = -(width / 2.0f);
-
-	float maxY = length / 2.0f;
-	float minY = -(length / 2.0f);
-
-	float maxZ = height / 2.0f;
-	float minZ = -(height / 2.0f);
-
-	lines.vertices = {
-		LineVertex{ vec4(maxX, minY, minZ, 0.0f),		vec4(1.0f) },
-		LineVertex{ vec4(minX, minY, minZ, 0.0f),		vec4(1.0f) },
-
-		LineVertex{ vec4(maxX, maxY, minZ, 0.0f),		vec4(1.0f) },
-		LineVertex{ vec4(minX, maxY, minZ, 0.0f),		vec4(1.0f) },
-
-		LineVertex{ vec4(maxX, minY, maxZ, 0.0f),		vec4(1.0f) },
-		LineVertex{ vec4(minX, minY, maxZ, 0.0f),		vec4(1.0f) },
-
-		LineVertex{ vec4(maxX, maxY, maxZ, 0.0f),		vec4(1.0f) },
-		LineVertex{ vec4(minX, maxY, maxZ, 0.0f),		vec4(1.0f) }
-	};
-
-	lines.indices = { 
-		0, 1, 
-		2, 3, 
-		4, 5, 
-		6, 7, 
-		0, 2, 
-		0, 4,
-		1, 3,
-		1, 5,
-		2, 6,
-		3, 7,
-		4, 6,
-		5, 7
-	};
-
-	lines.updateBuffers();
+	// GENERATE PARTICLES
+	vec3 minBounds = { -width, -length, -height };
+	vec3 maxBounds = { width, length, height };
 
 	// FILL VECTOR
 	particles.clear();
-	for (float x = minX; x <= maxX; x += 0.5f) {
-		for (float y = minY; y <= maxY; y += 0.5f) {
-			for (float z = minZ; z <= maxZ; z += 0.5f) {
+	for (float x = minBounds.x; x <= maxBounds.x; x += 0.5f) {
+		for (float y = minBounds.y; y <= maxBounds.y; y += 0.5f) {
+			for (float z = minBounds.z; z <= maxBounds.z; z += 0.5f) {
 
-				particles.push_back(vec4(x, y, z, 1.0f));
+				Particle temp{ vec3{x, y, z }, vec3{0.0f} };
+				particles.push_back(temp);
 
 			}
 		}
 	}
 
-	shaderPipelineComponent.updateParticleSSBO(particles);
+}
+
+void FluidSimComponent::ResizeOuterCage(float width, float length, float height) {
+
+	outerCage.scale.x = width;
+	outerCage.scale.y = length;
+	outerCage.scale.z = height;
+
+	outerBoundingBox.generateFromBoundingBox(outerCage);
+	outerBoundingBox.updateBuffers();
 
 }
 
 void FluidSimComponent::Draw(Camera& camera) {
 
-	shaderPipelineComponent.Draw(camera, cage, lines, particles.size(), vec3(width, length, height));
+	simulateTimeStep(0.001f);
+
+	// CREATE SSBO POS VECTOR
+	vector<vec4> particlePosSSBO;
+
+	for (const Particle& p : particles) {
+		particlePosSSBO.push_back(vec4{ p.position, 1.0f });
+	}
+
+	shaderPipelineComponent.updateParticleSSBO(particlePosSSBO);
+
+	shaderPipelineComponent.Draw(camera, innerCage, outerCage, innerBoundingBox, outerBoundingBox, particles.size());
+
+}
+
+void FluidSimComponent::simulateTimeStep(float timeStep) {
+
+	for (Particle& particle : particles) {
+
+		particle.velocity += vec3(0.0f, 0.0f, -9.8 * 0.05f);
+
+		vec3 newPosition = particle.position + particle.velocity * timeStep;
+
+		vec3 minBounds = { -outerCage.scale.x / 2.0f, -outerCage.scale.y / 2.0f, -outerCage.scale.z / 2.0f };
+		vec3 maxBounds = { outerCage.scale.x / 2.0f, outerCage.scale.y / 2.0f, outerCage.scale.z / 2.0f };
+
+		if (!(minBounds.x < newPosition.x && maxBounds.x > newPosition.x)) particle.velocity *= -1.0f;
+		if (!(minBounds.y < newPosition.y && maxBounds.y > newPosition.y)) particle.velocity *= -1.0f;
+		if (!(minBounds.z < newPosition.z && maxBounds.z > newPosition.z)) particle.velocity *= -1.0f;
+
+		particle.position += particle.velocity * timeStep;
+
+	}
 
 }

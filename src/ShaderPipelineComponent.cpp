@@ -21,15 +21,16 @@ ShaderPipelineComponent::~ShaderPipelineComponent() {
 
 }
 
-void ShaderPipelineComponent::Draw(Camera& camera, Mesh& cage, Lines& lines, unsigned int particleCount, vec3 cageSize) {
+void ShaderPipelineComponent::Draw(Camera& camera, Mesh& innerCage, Mesh& outerCage, Lines& innerBoundingBox, Lines& outerBoundingBox, unsigned int particleCount) {
 
 	camera.updateMatrix(*defaultShader);
 	camera.updateMatrix(*lineShader);
 
-	generateDefaultShaderUniforms(camera, particleCount, cageSize);
+	generateDefaultShaderUniforms(camera, particleCount, outerCage.scale);
 
-	cage.Draw(*defaultShader);
-	lines.Draw(*lineShader);
+	outerCage.Draw(*defaultShader);
+	innerBoundingBox.Draw(*lineShader);
+	outerBoundingBox.Draw(*lineShader);
 
 }
 

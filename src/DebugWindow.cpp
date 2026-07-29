@@ -4,6 +4,7 @@
 
 using namespace ImGui;
 using namespace std;
+using namespace glm;
 
 DebugWindow::DebugWindow(GLFWwindow* window) { initImgui(window); }
 
@@ -61,26 +62,45 @@ void DebugWindow::drawImgui(Scene& scene) {
 
 void DebugWindow::drawRenderTab(Scene& scene) {
 
-	if (BeginTable("ShaderLayoutTable", 1)) {
+	if (BeginTable("ShaderLayoutTable", 4)) {
 
-		TableSetupColumn("Physics Settings");
+		TableSetupColumn("Type");
+		TableSetupColumn("x");
+		TableSetupColumn("y");
+		TableSetupColumn("z");
 		TableHeadersRow();
+	
 
-		float width = scene.fluidSimComponent.getWidth();
-		float length = scene.fluidSimComponent.getLength();
-		float height = scene.fluidSimComponent.getHeight();
-
+		// INNER CAGE
 		TableNextRow();
 		TableNextColumn();
-		if (SliderFloat("Width", &width, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.Resize(width, length, height);
+		Text("Inner Cage");
+		TableNextColumn();
 
+		vec3 innerCageSize = scene.fluidSimComponent.getInnerCageSize();
+
+		if (SliderFloat("##Inner_Cage_Width", &innerCageSize.x, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize.x, innerCageSize.y, innerCageSize.z);
+		TableNextColumn();
+		if (SliderFloat("##Inner_Cage_Length", &innerCageSize.y, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize.x, innerCageSize.y, innerCageSize.z);
+		TableNextColumn();
+		if (SliderFloat("##Inner_Cage_Height", &innerCageSize.z, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize.x, innerCageSize.y, innerCageSize.z);
+
+
+		// OUTER CAGE
 		TableNextRow();
 		TableNextColumn();
-		if (SliderFloat("Length", &length, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.Resize(width, length, height);
-
-		TableNextRow();
+		Text("Outer Cage");
 		TableNextColumn();
-		if (SliderFloat("Height", &height, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.Resize(width, length, height);
+
+		vec3 outerCageSize = scene.fluidSimComponent.getOuterCageSize();
+
+		if (SliderFloat("##Outer_Cage_Width", &outerCageSize.x, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize.x, outerCageSize.y, outerCageSize.z);
+		TableNextColumn();
+		if (SliderFloat("##Outer_Cage_Length", &outerCageSize.y, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize.x, outerCageSize.y, outerCageSize.z);
+		TableNextColumn();
+		if (SliderFloat("##Outer_Cage_Height", &outerCageSize.z, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize.x, outerCageSize.y, outerCageSize.z);
+
+
 
 		EndTable();
 	}

@@ -8,12 +8,14 @@
 
 class Scene;
 class SSBOcomponent;
+class Lines;
 
 class Mesh {
 public:
 
 	friend Scene;
 	friend SSBOcomponent;
+	friend Lines;
 
 	glm::vec3 position { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation { 0.0f, 0.0f, 0.0f };
