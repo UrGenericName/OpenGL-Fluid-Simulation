@@ -6,6 +6,8 @@ using namespace ImGui;
 using namespace std;
 using namespace glm;
 
+#define PI 3.14159
+
 DebugWindow::DebugWindow(GLFWwindow* window) { initImgui(window); }
 
 DebugWindow::~DebugWindow() {
@@ -62,45 +64,73 @@ void DebugWindow::drawImgui(Scene& scene) {
 
 void DebugWindow::drawRenderTab(Scene& scene) {
 
-	if (BeginTable("ShaderLayoutTable", 4)) {
+	// PHYSICS SETTINGS
+	if (BeginTable("ShaderLayoutTable", 2)) {
 
-		TableSetupColumn("Type");
-		TableSetupColumn("x");
-		TableSetupColumn("y");
-		TableSetupColumn("z");
+		TableSetupColumn("Inner Cage");
+		TableHeadersRow();
+
+		TableNextRow();
+		TableNextColumn();
+
+		float particleDensity = scene.fluidSimComponent.GetParticleDensity();
+		if (SliderFloat("Particle Density", &particleDensity, 0.0f, 1.0f)) scene.fluidSimComponent.SetParticleDensity(particleDensity);
+
+		EndTable();
+	}
+
+	// INNER CAGE
+	if (BeginTable("ShaderLayoutTable", 3)) {
+
+		TableSetupColumn("Inner Cage");
 		TableHeadersRow();
 	
+		vec3 innerCagePos = scene.fluidSimComponent.GetInnerCagePos();
+		vec3 innerCageRot = scene.fluidSimComponent.GetInnerCageRot();
+		vec3 innerCageSize = scene.fluidSimComponent.GetInnerCageSize();
 
-		// INNER CAGE
 		TableNextRow();
 		TableNextColumn();
-		Text("Inner Cage");
+		if (SliderFloat("X##Inner_Cage_X", &innerCagePos.x, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.SetInnerCagePos(innerCagePos);
 		TableNextColumn();
-
-		vec3 innerCageSize = scene.fluidSimComponent.getInnerCageSize();
-
-		if (SliderFloat("##Inner_Cage_Width", &innerCageSize.x, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize.x, innerCageSize.y, innerCageSize.z);
+		if (SliderFloat("Y##Inner_Cage_Y", &innerCagePos.y, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.SetInnerCagePos(innerCagePos);
 		TableNextColumn();
-		if (SliderFloat("##Inner_Cage_Length", &innerCageSize.y, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize.x, innerCageSize.y, innerCageSize.z);
-		TableNextColumn();
-		if (SliderFloat("##Inner_Cage_Height", &innerCageSize.z, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize.x, innerCageSize.y, innerCageSize.z);
+		if (SliderFloat("Z##Inner_Cage_Z", &innerCagePos.z, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.SetInnerCagePos(innerCagePos);
 
-
-		// OUTER CAGE
 		TableNextRow();
 		TableNextColumn();
-		Text("Outer Cage");
+		if (SliderFloat("Pitch##Inner_Cage_Pitch", &innerCageRot.x, 0.0f, PI * 2.0f)) scene.fluidSimComponent.SetInnerCageRot(innerCageRot);
 		TableNextColumn();
-
-		vec3 outerCageSize = scene.fluidSimComponent.getOuterCageSize();
-
-		if (SliderFloat("##Outer_Cage_Width", &outerCageSize.x, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize.x, outerCageSize.y, outerCageSize.z);
+		if (SliderFloat("Yaw##Inner_Cage_Yaw", &innerCageRot.y, 0.0f, PI * 2.0f)) scene.fluidSimComponent.SetInnerCageRot(innerCageRot);
 		TableNextColumn();
-		if (SliderFloat("##Outer_Cage_Length", &outerCageSize.y, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize.x, outerCageSize.y, outerCageSize.z);
+		if (SliderFloat("Roll##Inner_Cage_Roll", &innerCageRot.z, 0.0f, PI * 2.0f)) scene.fluidSimComponent.SetInnerCageRot(innerCageRot);
+
+		TableNextRow();
 		TableNextColumn();
-		if (SliderFloat("##Outer_Cage_Height", &outerCageSize.z, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize.x, outerCageSize.y, outerCageSize.z);
+		if (SliderFloat("Width##Inner_Cage_Width", &innerCageSize.x, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize);
+		TableNextColumn();
+		if (SliderFloat("Length##Inner_Cage_Length", &innerCageSize.y, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize);
+		TableNextColumn();
+		if (SliderFloat("Height##Inner_Cage_Height", &innerCageSize.z, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeInnerCage(innerCageSize);
 
+		EndTable();
+	}
+	
+	// OUTER CAGE
+	if (BeginTable("ShaderLayoutTable", 3)) {
 
+		TableSetupColumn("Outer Cage");
+		TableHeadersRow();
+
+		vec3 outerCageSize = scene.fluidSimComponent.GetOuterCageSize();
+
+		TableNextRow();
+		TableNextColumn();
+		if (SliderFloat("Width##Outer_Cage_Width", &outerCageSize.x, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize);
+		TableNextColumn();
+		if (SliderFloat("Length##Outer_Cage_Length", &outerCageSize.y, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize);
+		TableNextColumn();
+		if (SliderFloat("Height##Outer_Cage_Height", &outerCageSize.z, 0.0f, MAX_CAGE_SIZE)) scene.fluidSimComponent.ResizeOuterCage(outerCageSize);
 
 		EndTable();
 	}

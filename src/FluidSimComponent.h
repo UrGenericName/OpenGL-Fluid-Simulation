@@ -23,15 +23,26 @@ public:
 	FluidSimComponent();
 	~FluidSimComponent();
 
-	vec3 getInnerCageSize() { return vec3 { innerCage.scale.x, innerCage.scale.y, innerCage.scale.z }; };
-	vec3 getOuterCageSize() { return vec3 { outerCage.scale.x, outerCage.scale.y, outerCage.scale.z }; }
+	float GetParticleDensity() { return particleDensity; };
+	void SetParticleDensity(float i_particleDensity) { particleDensity = i_particleDensity; FillInnerCage(); };
 
-	void ResizeInnerCage(float width, float length, float height);
-	void ResizeOuterCage(float width, float length, float height);
+	// OUTER CAGE FUNCTIONS
+	vec3 GetOuterCageSize() { return vec3{ outerCage.scale.x, outerCage.scale.y, outerCage.scale.z }; };
+	void ResizeOuterCage(vec3 scale);
+
+	// INNER CAGE FUNCTIONS
+	vec3 GetInnerCagePos() { return innerCage.position; };
+	vec3 GetInnerCageRot() { return innerCage.rotation; };
+	vec3 GetInnerCageSize() { return innerCage.scale; };
+	void SetInnerCagePos(vec3 position);
+	void SetInnerCageRot(vec3 rotation);
+	void ResizeInnerCage(vec3 scale);
 
 	void Draw(Camera& camera);
 
 private:
+
+	float particleDensity = 0.5f;
 
 	const vec3 innerBoundingBoxColor { 0.0f, 1.0f, 1.0f };
 	const vec3 outerBoundingBoxColor { 1.0f, 1.0f, 1.0f };
@@ -42,6 +53,7 @@ private:
 
 	std::vector<Particle> particles;
 
-	void simulateTimeStep(float timeStep);
+	void FillInnerCage();
+	void SimulateTimeStep(float timeStep);
 
 };

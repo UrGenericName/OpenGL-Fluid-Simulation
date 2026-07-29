@@ -9,33 +9,69 @@ FluidSimComponent::FluidSimComponent() {
 	innerBoundingBox.tint = innerBoundingBoxColor;
 	outerBoundingBox.tint = outerBoundingBoxColor;
 
-	ResizeInnerCage(1.0f, 1.0f, 1.0f);
-	ResizeOuterCage(2.0f, 2.0f, 2.0f);
+	ResizeInnerCage(vec3{ 1.0f, 1.0f, 1.0f });
+	ResizeOuterCage(vec3{ 16.0f, 16.0f, 16.0f });
 
 }
 
 FluidSimComponent::~FluidSimComponent() {}
 
-void FluidSimComponent::ResizeInnerCage(float width, float length, float height) {
+void FluidSimComponent::SetInnerCagePos(vec3 position) {
 
-	innerCage.scale.x = width;
-	innerCage.scale.y = length;
-	innerCage.scale.z = height;
+	innerCage.position = position;
 
 	innerBoundingBox.generateFromBoundingBox(innerCage);
 	innerBoundingBox.updateBuffers();
 
-	// GENERATE PARTICLES
-	vec3 minBounds = { -width, -length, -height };
-	vec3 maxBounds = { width, length, height };
+	FillInnerCage();
+
+}
+
+
+void FluidSimComponent::SetInnerCageRot(vec3 rotation) {
+
+	innerCage.rotation = rotation;
+
+	innerBoundingBox.generateFromBoundingBox(innerCage);
+	innerBoundingBox.updateBuffers();
+
+	FillInnerCage();
+
+}
+
+void FluidSimComponent::ResizeInnerCage(vec3 scale) {
+
+	innerCage.scale = scale;
+
+	innerBoundingBox.generateFromBoundingBox(innerCage);
+	innerBoundingBox.updateBuffers();
+
+	FillInnerCage();
+
+}
+
+void FluidSimComponent::ResizeOuterCage(vec3 scale) {
+
+	outerCage.scale = scale;
+
+	outerBoundingBox.generateFromBoundingBox(outerCage);
+	outerBoundingBox.updateBuffers();
+
+}
+
+void FluidSimComponent::FillInnerCage() {
+
+	vec3 minBounds = { -0.5f, -0.5f, -0.5f };
+	vec3 maxBounds = { 0.5f, 0.5f, 0.5f };
 
 	// FILL VECTOR
 	particles.clear();
-	for (float x = minBounds.x; x <= maxBounds.x; x += 0.5f) {
-		for (float y = minBounds.y; y <= maxBounds.y; y += 0.5f) {
-			for (float z = minBounds.z; z <= maxBounds.z; z += 0.5f) {
+	for (float x = minBounds.x; x <= maxBounds.x; x += (particleDensity / innerCage.scale.x) ) {
+		for (float y = minBounds.y; y <= maxBounds.y; y += (particleDensity / innerCage.scale.y) ) {
+			for (float z = minBounds.z; z <= maxBounds.z; z += (particleDensity / innerCage.scale.z) ) {
 
 				Particle temp{ vec3{x, y, z }, vec3{0.0f} };
+				temp.position = vec3(innerCage.getModelMatrix() * vec4(temp.position, 1.0f));
 				particles.push_back(temp);
 
 			}
@@ -44,20 +80,9 @@ void FluidSimComponent::ResizeInnerCage(float width, float length, float height)
 
 }
 
-void FluidSimComponent::ResizeOuterCage(float width, float length, float height) {
-
-	outerCage.scale.x = width;
-	outerCage.scale.y = length;
-	outerCage.scale.z = height;
-
-	outerBoundingBox.generateFromBoundingBox(outerCage);
-	outerBoundingBox.updateBuffers();
-
-}
-
 void FluidSimComponent::Draw(Camera& camera) {
 
-	simulateTimeStep(0.001f);
+	SimulateTimeStep(0.001f);
 
 	// CREATE SSBO POS VECTOR
 	vector<vec4> particlePosSSBO;
@@ -72,7 +97,7 @@ void FluidSimComponent::Draw(Camera& camera) {
 
 }
 
-void FluidSimComponent::simulateTimeStep(float timeStep) {
+void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
 	for (Particle& particle : particles) {
 
