@@ -24,6 +24,10 @@ ShaderPipelineComponent::~ShaderPipelineComponent() {
 
 void ShaderPipelineComponent::Draw_Mesh(Camera& camera, Mesh& mesh) {
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+
 	camera.updateMatrix(*meshShader);
 	generateMeshShaderUniforms(camera);
 
@@ -33,6 +37,11 @@ void ShaderPipelineComponent::Draw_Mesh(Camera& camera, Mesh& mesh) {
 
 void ShaderPipelineComponent::Draw_Particles(Camera& camera, Mesh& innerCage, Mesh& outerCage, unsigned int particleCount) {
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	camera.updateMatrix(*particleShader);
 	generateParticleShaderUniforms(camera, particleCount, outerCage.scale);
 
@@ -40,6 +49,10 @@ void ShaderPipelineComponent::Draw_Particles(Camera& camera, Mesh& innerCage, Me
 }
 
 void ShaderPipelineComponent::Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox) {
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
 
 	camera.updateMatrix(*lineShader);
 
