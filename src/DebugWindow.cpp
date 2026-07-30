@@ -100,7 +100,7 @@ void DebugWindow::drawPhysicsTab(Scene& scene) {
 
 		TableNextColumn();
 		float particleDensity = scene.fluidSimComponent.GetParticleDensity();
-		if (SliderFloat("Particle Density", &particleDensity, 0.0f, 1.0f)) scene.fluidSimComponent.SetParticleDensity(particleDensity);
+		if (SliderFloat("Particle Density", &particleDensity, MIN_PARTICLE_DENSITY, MAX_PARTICLE_DENSITY)) scene.fluidSimComponent.SetParticleDensity(particleDensity);
 
 
 		EndTable();

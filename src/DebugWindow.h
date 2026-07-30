@@ -14,6 +14,9 @@
 
 #include "DebugSettings.h"
 
+#define MIN_PARTICLE_DENSITY 0.1f
+#define MAX_PARTICLE_DENSITY 1.0f
+
 #define MAX_PARTICLE_RENDER_RADIUS 1.0f
 #define MAX_CAGE_SIZE 16.0f
 
