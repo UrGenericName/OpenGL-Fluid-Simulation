@@ -44,6 +44,9 @@ void Camera::updateMatrix(Shader& shader) {
 	GLuint u_camMatrixLoc = glGetUniformLocation(shader.ID, "u_camMatrix");
 	glUniformMatrix4fv(u_camMatrixLoc, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 
+	GLuint u_camPosUniformLocation = glGetUniformLocation(shader.ID, "u_camPos");
+	glUniform3f(u_camPosUniformLocation, Position.x, Position.y, Position.z);
+
 	GLuint u_nearPlaneLoc = glGetUniformLocation(shader.ID, "u_nearPlane");
 	glUniform1f(u_nearPlaneLoc, nearPlane);
 

@@ -18,7 +18,7 @@ struct Particle {
 class FluidSimComponent {
 public:
 
-	bool physicsPause = true;
+	bool physicsPlay = false;
 
 	ShaderPipelineComponent shaderPipelineComponent;
 
@@ -27,6 +27,8 @@ public:
 
 	float GetParticleDensity() { return particleDensity; };
 	void SetParticleDensity(float i_particleDensity) { particleDensity = i_particleDensity; FillInnerCage(); };
+
+	void FillInnerCage();
 
 	// OUTER CAGE FUNCTIONS
 	vec3 GetOuterCageSize() { return vec3{ outerCage.scale.x, outerCage.scale.y, outerCage.scale.z }; };
@@ -58,7 +60,6 @@ private:
 	std::vector<Particle> particles;
 	std::vector<vec4> particlePosSSBO;
 
-	void FillInnerCage();
 	void SimulateTimeStep(float timeStep);
 
 };

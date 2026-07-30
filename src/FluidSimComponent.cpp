@@ -7,6 +7,7 @@ using namespace glm;
 FluidSimComponent::FluidSimComponent() {
 
 	ball.scale = vec3(2.0f);
+	ball.position.z -= 4.0f;
 
 	innerBoundingBox.tint = innerBoundingBoxColor;
 	outerBoundingBox.tint = outerBoundingBoxColor;
@@ -20,6 +21,8 @@ FluidSimComponent::~FluidSimComponent() {}
 
 void FluidSimComponent::SetInnerCagePos(vec3 position) {
 
+	physicsPlay = false;
+
 	innerCage.position = position;
 
 	innerBoundingBox.generateFromBoundingBox(innerCage);
@@ -32,6 +35,8 @@ void FluidSimComponent::SetInnerCagePos(vec3 position) {
 
 void FluidSimComponent::SetInnerCageRot(vec3 rotation) {
 
+	physicsPlay = false;
+
 	innerCage.rotation = rotation;
 
 	innerBoundingBox.generateFromBoundingBox(innerCage);
@@ -43,6 +48,8 @@ void FluidSimComponent::SetInnerCageRot(vec3 rotation) {
 
 void FluidSimComponent::ResizeInnerCage(vec3 scale) {
 
+	physicsPlay = false;
+
 	innerCage.scale = scale;
 
 	innerBoundingBox.generateFromBoundingBox(innerCage);
@@ -53,6 +60,8 @@ void FluidSimComponent::ResizeInnerCage(vec3 scale) {
 }
 
 void FluidSimComponent::ResizeOuterCage(vec3 scale) {
+
+	physicsPlay = false;
 
 	outerCage.scale = scale;
 
@@ -86,7 +95,7 @@ void FluidSimComponent::FillInnerCage() {
 
 void FluidSimComponent::Draw(Camera& camera) {
 
-	if (!physicsPause) SimulateTimeStep(0.0001f);
+	if (physicsPlay) SimulateTimeStep(0.0001f);
 
 	shaderPipelineComponent.updateParticleSSBO(particlePosSSBO);
 	shaderPipelineComponent.Draw_Particles(camera, innerCage, outerCage, particles.size());

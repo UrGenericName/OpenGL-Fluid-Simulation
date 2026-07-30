@@ -96,22 +96,22 @@ void ShaderPipelineComponent::generateParticleShaderUniforms(Camera& camera, uns
 
 	particleShader->Activate();
 
-	int camPosUniformLocation = glGetUniformLocation(particleShader->ID, "u_camPos");
-	glUniform3f(camPosUniformLocation, camera.Position.x, camera.Position.y, camera.Position.z);
+	GLuint u_camPosUniformLoc = glGetUniformLocation(particleShader->ID, "u_camPos");
+	glUniform3f(u_camPosUniformLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
-	int particleCountUniformLocation = glGetUniformLocation(particleShader->ID, "u_particleCount");
-	glUniform1ui(particleCountUniformLocation, particleCount);
+	GLuint u_particleCountUniformLoc = glGetUniformLocation(particleShader->ID, "u_particleCount");
+	glUniform1ui(u_particleCountUniformLoc, particleCount);
 
-	int cageSizeUniformLocation = glGetUniformLocation(particleShader->ID, "u_cageSize");
-	glUniform3f(cageSizeUniformLocation, cageSize.x, cageSize.y, cageSize.z);
+	GLuint u_particleRadiusUniformLoc = glGetUniformLocation(particleShader->ID, "u_particleRadius");
+	glUniform1f(u_particleRadiusUniformLoc, particleRenderRadius);
+
+	GLuint u_cageSizeUniformLoc = glGetUniformLocation(particleShader->ID, "u_cageSize");
+	glUniform3f(u_cageSizeUniformLoc, cageSize.x, cageSize.y, cageSize.z);
 
 }
 
 void ShaderPipelineComponent::generateMeshShaderUniforms(Camera& camera) {
 
 	meshShader->Activate();
-
-	int camPosUniformLocation = glGetUniformLocation(meshShader->ID, "u_camPos");
-	glUniform3f(camPosUniformLocation, camera.Position.x, camera.Position.y, camera.Position.z);
 
 }

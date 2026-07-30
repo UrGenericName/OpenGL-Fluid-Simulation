@@ -14,6 +14,7 @@
 
 #include "DebugSettings.h"
 
+#define MAX_PARTICLE_RENDER_RADIUS 1.0f
 #define MAX_CAGE_SIZE 16.0f
 
 class DebugWindow {
@@ -28,6 +29,8 @@ private:
 	void initImgui(GLFWwindow* window);
 
 	void drawRenderTab(Scene& scene);
+	void drawPhysicsTab(Scene& scene);
+	void drawCageTab(Scene& scene);
 
 	ImVec2 windowSize;
 	ImVec2 windowPosition;

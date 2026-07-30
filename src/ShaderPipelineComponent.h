@@ -9,6 +9,8 @@
 class ShaderPipelineComponent {
 public:
 
+	float particleRenderRadius = 1.0f / 32.0f;
+
 	Shader* meshShader;
 	Shader* particleShader;
 	Shader* lineShader;
