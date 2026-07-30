@@ -106,12 +106,16 @@ void FluidSimComponent::Draw(Camera& camera) {
 
 void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
+	const float RESTITUTION { 0.8f };
+
 	for (int i = 0; i < particles.size(); ++i) {
 
 		Particle& particle = particles[i];
 
 		// GRAVITY
 		particle.velocity += vec3(0.0f, 0.0f, -9.8);
+
+
 
 		vec3 nextPosition = particle.position + particle.velocity * timeStep;
 
@@ -128,15 +132,18 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
 				// Move particle out of bounds to a point where redirected velocity will correctly position it at end of timestep function
 				float t = (intersectedBoundsValue - particle.position[component]) / (nextPosition[component] - particle.position[component]);
-				vec3 correctedPosition = (nextPosition - particle.position) * (t + 1.0f) + particle.position;
-				particle.position = correctedPosition;
+
+				// Ensure t is an expected value, if not then the difference is small enough that we don't need to move the position
+				if (0.0f <= t && t <= 1.0f) {
+					particle.position = (nextPosition - particle.position) * (t + 1.0f) + particle.position;
+				}
 
 				vec3 normal{ 0.0f };
 				normal[component] = 1.0f;
 
 				// Calculate new velocity
 				particle.velocity = reflect(particle.velocity, normal);
-				particle.velocity *= 0.8f;			// energy lost
+				particle.velocity *= RESTITUTION;			// energy lost
 
 			}
 
@@ -151,6 +158,8 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 			particle.velocity *= 0.8f; // energy lost
 
 		}
+
+
 
 		// UPDATE POSITION
 		particle.position += particle.velocity * timeStep;
