@@ -49,8 +49,8 @@ void drawParticle(vec3 orig) {
 		
 		float z = distance(orig, u_camPos);
 		gl_FragDepth = (u_farPlane * (z - u_nearPlane)) / (z * (u_farPlane - u_nearPlane));
-		FragColor = vec4( 1.0f, 1.0f, 1.0f, 1.0f);
-
+		
+		FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	}
 

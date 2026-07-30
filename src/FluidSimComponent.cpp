@@ -113,8 +113,6 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 		// GRAVITY
 		particle.velocity += vec3(0.0f, 0.0f, -9.8);
 
-
-
 		vec3 newPosition = particle.position + particle.velocity * timeStep;
 
 		// CAGE COLLISION CHECK

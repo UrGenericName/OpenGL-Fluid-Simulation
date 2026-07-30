@@ -38,6 +38,12 @@ void ShaderPipelineComponent::Draw_Particles(Camera& camera, Mesh& innerCage, Me
 
 void ShaderPipelineComponent::Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox) {
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	camera.updateMatrix(*lineShader);
 
 	innerBoundingBox.Draw(*lineShader);
@@ -46,6 +52,12 @@ void ShaderPipelineComponent::Draw_BoundingBoxes(Camera& camera, Lines& innerBou
 }
 
 void ShaderPipelineComponent::Draw_Mesh(Camera& camera, Mesh& mesh) {
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	camera.updateMatrix(*meshShader);
 	generateMeshShaderUniforms(camera);
