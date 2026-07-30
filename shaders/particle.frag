@@ -14,11 +14,13 @@ in vec3 intersectionPoint;
 
 // UNIFORMS
 uniform vec3 u_camPos;
+uniform float u_nearPlane;
+uniform float u_farPlane;
 uniform unsigned int u_particleCount;
 uniform vec3 u_cageSize;
 
 // FUNCTION SIGNATURES
-void drawSphere(vec3 orig);
+void drawParticle(vec3 orig);
 float distBetweenPointAndLine(vec3 P, vec3 A, vec3 B);
 
 #define CAGE_ALPHA 0.2f
@@ -28,26 +30,25 @@ float distBetweenPointAndLine(vec3 P, vec3 A, vec3 B);
 
 void main(){
 	
+	gl_FragDepth = 1.0f;
 	FragColor = vec4(1.0f, 1.0f, 1.0f, CAGE_ALPHA);
 
 	for (int i = 0; i < u_particleCount; ++i) {
-		drawSphere( particles[i].xyz );
+		drawParticle( particles[i].xyz );	
 	}
 
 }
 
 
 
-void drawSphere(vec3 orig) {
+void drawParticle(vec3 orig) {
 
 	float d = distBetweenPointAndLine(orig, intersectionPoint, u_camPos);
 
 	if (d <= SPHERE_RADIUS) {
-
-		float x_normalized = (orig.x + u_cageSize.x / 2.0f) / (u_cageSize.x * 2.0f);
-		float y_normalized = (orig.y + u_cageSize.y / 2.0f) / (u_cageSize.y * 2.0f);
-		float z_normalized = (orig.z + u_cageSize.z / 2.0f) / (u_cageSize.z * 2.0f);
-
+		
+		float z = distance(orig, u_camPos);
+		gl_FragDepth = (u_farPlane * (z - u_nearPlane)) / (z * (u_farPlane - u_nearPlane));
 		FragColor = vec4( 1.0f, 1.0f, 1.0f, 1.0f);
 
 	}
@@ -66,6 +67,8 @@ float distBetweenPointAndLine(vec3 P, vec3 A, vec3 B) {
 	vec3 QP = P - Q;
 
 	vec3 v = A - B;
+
+	float t = dot(QP, v) / dot(v, v); 
 
 	float d = length( cross(v, QP) ) / length( v );
 

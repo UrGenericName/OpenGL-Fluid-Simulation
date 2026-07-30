@@ -41,7 +41,15 @@ void Camera::updateMatrix(Shader& shader) {
 	cameraMatrix = projection * view;
 
 	shader.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "u_camMatrix"), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	GLuint u_camMatrixLoc = glGetUniformLocation(shader.ID, "u_camMatrix");
+	glUniformMatrix4fv(u_camMatrixLoc, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+
+	GLuint u_nearPlaneLoc = glGetUniformLocation(shader.ID, "u_nearPlane");
+	glUniform1f(u_nearPlaneLoc, nearPlane);
+
+	GLuint u_farPlaneLoc = glGetUniformLocation(shader.ID, "u_farPlane");
+	glUniform1f(u_farPlaneLoc, farPlane);
+
 }
 
 glm::mat4 Camera::getMatrix() {

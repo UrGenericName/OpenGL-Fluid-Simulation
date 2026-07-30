@@ -127,9 +127,9 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 		}
 
 		// SPHERE COLLISION CHECK
-		if (distance(particle.position, ball.position) < 2.0f) {
+		if (distance(newPosition, ball.position) < 2.0f) {
 
-			vec3 normal = normalize(particle.position - ball.position);
+			vec3 normal = normalize(newPosition - ball.position);
 
 			particle.velocity = reflect(particle.velocity, normal);
 			particle.velocity *= 0.8f; // energy lost

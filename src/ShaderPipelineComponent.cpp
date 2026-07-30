@@ -22,23 +22,11 @@ ShaderPipelineComponent::~ShaderPipelineComponent() {
 
 }
 
-void ShaderPipelineComponent::Draw_Mesh(Camera& camera, Mesh& mesh) {
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_BLEND);
-
-	camera.updateMatrix(*meshShader);
-	generateMeshShaderUniforms(camera);
-
-	mesh.Draw(*meshShader);
-
-}
-
 void ShaderPipelineComponent::Draw_Particles(Camera& camera, Mesh& innerCage, Mesh& outerCage, unsigned int particleCount) {
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -50,14 +38,19 @@ void ShaderPipelineComponent::Draw_Particles(Camera& camera, Mesh& innerCage, Me
 
 void ShaderPipelineComponent::Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox) {
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_BLEND);
-
 	camera.updateMatrix(*lineShader);
 
 	innerBoundingBox.Draw(*lineShader);
 	outerBoundingBox.Draw(*lineShader);
+
+}
+
+void ShaderPipelineComponent::Draw_Mesh(Camera& camera, Mesh& mesh) {
+
+	camera.updateMatrix(*meshShader);
+	generateMeshShaderUniforms(camera);
+
+	mesh.Draw(*meshShader);
 
 }
 
@@ -99,15 +92,6 @@ void ShaderPipelineComponent::deleteParticleSSBO() {
 
 }
 
-void ShaderPipelineComponent::generateMeshShaderUniforms(Camera& camera) {
-
-	meshShader->Activate();
-
-	int camPosUniformLocation = glGetUniformLocation(meshShader->ID, "u_camPos");
-	glUniform3f(camPosUniformLocation, camera.Position.x, camera.Position.y, camera.Position.z);
-
-}
-
 void ShaderPipelineComponent::generateParticleShaderUniforms(Camera& camera, unsigned int particleCount, vec3 cageSize) {
 
 	particleShader->Activate();
@@ -120,5 +104,14 @@ void ShaderPipelineComponent::generateParticleShaderUniforms(Camera& camera, uns
 
 	int cageSizeUniformLocation = glGetUniformLocation(particleShader->ID, "u_cageSize");
 	glUniform3f(cageSizeUniformLocation, cageSize.x, cageSize.y, cageSize.z);
+
+}
+
+void ShaderPipelineComponent::generateMeshShaderUniforms(Camera& camera) {
+
+	meshShader->Activate();
+
+	int camPosUniformLocation = glGetUniformLocation(meshShader->ID, "u_camPos");
+	glUniform3f(camPosUniformLocation, camera.Position.x, camera.Position.y, camera.Position.z);
 
 }

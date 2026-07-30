@@ -16,9 +16,9 @@ public:
 	ShaderPipelineComponent();
 	~ShaderPipelineComponent();
 
-	void Draw_Mesh(Camera& camera, Mesh& mesh);
 	void Draw_Particles(Camera& camera, Mesh& innerCage, Mesh& outerCage, unsigned int particleCount);
 	void Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox);
+	void Draw_Mesh(Camera& camera, Mesh& mesh);
 
 	void generateParticleSSBO();
 	void updateParticleSSBO(std::vector<glm::vec4> particles);
@@ -28,7 +28,7 @@ private:
 
 	GLuint particleSSBO;
 	
-	void generateMeshShaderUniforms(Camera& camera);
 	void generateParticleShaderUniforms(Camera& camera, unsigned int particleCount, glm::vec3 cageSize);
+	void generateMeshShaderUniforms(Camera& camera);
 
 };
