@@ -113,7 +113,7 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 		// GRAVITY
 		particle.velocity += vec3(0.0f, 0.0f, -9.8);
 
-		vec3 newPosition = particle.position + particle.velocity * timeStep;
+		vec3 nextPosition = particle.position + particle.velocity * timeStep;
 
 		// CAGE COLLISION CHECK
 		vec3 minBounds = { -outerCage.scale.x / 2.0f, -outerCage.scale.y / 2.0f, -outerCage.scale.z / 2.0f };
@@ -121,22 +121,31 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
 		for (int component = 0; component < 3; ++component) {
 
-			if (!(minBounds[component] < newPosition[component] && maxBounds[component] > newPosition[component]))	// if new position is outside bounds, redirect velocity
+			if (!(minBounds[component] < nextPosition[component] && maxBounds[component] > nextPosition[component]))	// if new position is outside bounds, move particle to intersection and redirect velocity
 			{
+
+				float intersectedBoundsValue = (minBounds[component] >= nextPosition[component]) ? minBounds[component] : maxBounds[component];
+
+				// Move particle out of bounds to a point where redirected velocity will correctly position it at end of timestep function
+				float t = (intersectedBoundsValue - particle.position[component]) / (nextPosition[component] - particle.position[component]);
+				vec3 correctedPosition = (nextPosition - particle.position) * (t + 1.0f) + particle.position;
+				particle.position = correctedPosition;
+
 				vec3 normal{ 0.0f };
 				normal[component] = 1.0f;
 
+				// Calculate new velocity
 				particle.velocity = reflect(particle.velocity, normal);
-				particle.velocity *= 0.8f; // energy lost
+				particle.velocity *= 0.8f;			// energy lost
 
 			}
 
 		}
 
 		// SPHERE COLLISION CHECK
-		if (distance(newPosition, ball.position) < 2.0f) {
+		if (distance(nextPosition, ball.position) < 2.0f) {
 
-			vec3 normal = normalize(newPosition - ball.position);
+			vec3 normal = normalize(nextPosition - ball.position);
 
 			particle.velocity = reflect(particle.velocity, normal);
 			particle.velocity *= 0.8f; // energy lost
