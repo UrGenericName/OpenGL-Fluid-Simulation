@@ -10,13 +10,12 @@ out vec4 FragColor;
 
 // INPUT
 in vec3 color;
-in vec3 intersectionPoint;
-
+in vec3 intersectionPoint
 // UNIFORMS
 uniform vec3 u_camPos;
 uniform float u_nearPlane;
 uniform float u_farPlane;
-uniform unsigned int u_particleCount;
+uniform uint u_particleCount;
 uniform float u_particleRadius;
 uniform vec3 u_cageSize;
 

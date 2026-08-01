@@ -143,7 +143,7 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
 				// Calculate new velocity
 				particle.velocity = reflect(particle.velocity, normal);
-				particle.velocity *= RESTITUTION;			// energy lost
+				particle.velocity *= RESTITUTION;	// energy lost
 
 			}
 
