@@ -10,7 +10,7 @@ out vec4 FragColor;
 
 // INPUT
 in vec3 color;
-in vec3 intersectionPoint
+in vec3 intersectionPoint;
 // UNIFORMS
 uniform vec3 u_camPos;
 uniform float u_nearPlane;
