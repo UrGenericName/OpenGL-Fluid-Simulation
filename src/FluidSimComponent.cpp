@@ -77,7 +77,7 @@ void FluidSimComponent::FillInnerCage() {
 
 	// FILL VECTOR
 	particles.clear();
-	particlePosSSBO.clear();
+	particleSSBO.clear();
 	for (float x = minBounds.x; x <= maxBounds.x; x += (particleDensity / innerCage.scale.x) ) {
 		for (float y = minBounds.y; y <= maxBounds.y; y += (particleDensity / innerCage.scale.y) ) {
 			for (float z = minBounds.z; z <= maxBounds.z; z += (particleDensity / innerCage.scale.z) ) {
@@ -85,7 +85,7 @@ void FluidSimComponent::FillInnerCage() {
 				Particle temp{ vec3{x, y, z }, vec3{0.0f, 1.0f, 0.0f} };
 				temp.position = vec3(innerCage.getModelMatrix() * vec4(temp.position, 1.0f));
 				particles.push_back(temp);
-				particlePosSSBO.push_back(vec4(temp.position, 1.0f));
+				particleSSBO.push_back(vec4(temp.position, 1.0f));
 
 			}
 		}
@@ -97,10 +97,37 @@ void FluidSimComponent::Draw(Camera& camera) {
 
 	if (physicsPlay) SimulateTimeStep(0.0001f);
 
-	shaderPipelineComponent.updateParticleSSBO(particlePosSSBO);
+	shaderPipelineComponent.updateParticleSSBO(particleSSBO);
 	shaderPipelineComponent.Draw_Particles(camera, innerCage, outerCage, particles.size());
 	shaderPipelineComponent.Draw_BoundingBoxes(camera, innerBoundingBox, outerBoundingBox);
 	shaderPipelineComponent.Draw_Mesh(camera, ball);
+
+}
+
+float FluidSimComponent::SmoothingKernel(float r) {
+
+	const float h = 1.0f;
+	const float normalizationFactor = 315.0f / (64.0f * 3.14159 * pow(h, 9));
+
+	if (r < 0.0f || h < r) return 0.0f;
+
+	return normalizationFactor * pow(h * h - r * r, 3);
+
+}
+	
+float FluidSimComponent::GetDensity(vec3 position) {
+
+	float density = 0.0f;
+
+	for (const Particle& particle : particles) {
+
+		if (particle.position == position) continue;
+
+		density += particle.mass * SmoothingKernel( distance(particle.position, position) );
+
+	}
+
+	return density;
 
 }
 
@@ -114,6 +141,9 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
 		// GRAVITY
 		particle.velocity += vec3(0.0f, 0.0f, -9.8);
+
+		// DENSITY
+		particle.density = GetDensity(particle.position);
 
 
 
@@ -163,7 +193,7 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 
 		// UPDATE POSITION
 		particle.position += particle.velocity * timeStep;
-		particlePosSSBO[i] = vec4(particle.position, 1.0f);
+		particleSSBO[i] = vec4(particle.position, particle.density);
 
 	}
 

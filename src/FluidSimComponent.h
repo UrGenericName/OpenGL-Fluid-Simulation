@@ -12,6 +12,8 @@ struct Particle {
 
 	vec3 position;
 	vec3 velocity;
+	float density;
+	const float mass = 1.0f;
 
 };
 
@@ -58,8 +60,10 @@ private:
 	Mesh ball{ "models/sphere.obj", vec3(1.0f, 0.3f, 0.3f) };
 
 	std::vector<Particle> particles;
-	std::vector<vec4> particlePosSSBO;
+	std::vector<vec4> particleSSBO;
 
+	float SmoothingKernel(float r);
+	float GetDensity(vec3 position);
 	void SimulateTimeStep(float timeStep);
 
 };

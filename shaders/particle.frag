@@ -11,6 +11,7 @@ out vec4 FragColor;
 // INPUT
 in vec3 color;
 in vec3 intersectionPoint;
+
 // UNIFORMS
 uniform vec3 u_camPos;
 uniform float u_nearPlane;
@@ -20,7 +21,7 @@ uniform float u_particleRadius;
 uniform vec3 u_cageSize;
 
 // FUNCTION SIGNATURES
-void drawParticle(vec3 orig);
+void drawParticle(vec3 orig, float density);
 float distBetweenPointAndLine(vec3 P, vec3 A, vec3 B, out vec3 closestPoint);
 
 #define CAGE_ALPHA 0.2f
@@ -32,14 +33,14 @@ void main(){
 	FragColor = vec4(1.0f, 1.0f, 1.0f, CAGE_ALPHA);
 
 	for (int i = 0; i < u_particleCount; ++i) {
-		drawParticle( particles[i].xyz );	
+		drawParticle( particles[i].xyz, particles[i].w );	
 	}
 
 }
 
 
 
-void drawParticle(vec3 orig) {
+void drawParticle(vec3 orig, float density) {
 
 	vec3 closestPoint;
 	float d = distBetweenPointAndLine(orig, intersectionPoint, u_camPos, closestPoint);
@@ -48,8 +49,10 @@ void drawParticle(vec3 orig) {
 		
 		float z = distance(orig, u_camPos);
 		gl_FragDepth = (u_farPlane * (z - u_nearPlane)) / (z * (u_farPlane - u_nearPlane));
-		
-		FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		vec3 densityColor = vec3( density, 0.0f, 1.0f - density );
+
+		FragColor = vec4( densityColor, 1.0f);
 
 	}
 
