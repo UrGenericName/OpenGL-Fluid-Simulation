@@ -113,39 +113,6 @@
     <None Include="shaders\particle.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="models\room\white_walls.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\car_base.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\car_parts.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\cube.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\room\cubeA.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\room\cubeB.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\room\green_wall.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\room\light.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\monkey.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\room\red_wall.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
-    <None Include="models\room\sphere.obj">
-      <Filter>Resource Files\Models</Filter>
-    </None>
     <None Include="shaders\line.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
@@ -243,5 +210,16 @@
     <Image Include="textures\brick.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="models\cage.obj">
+      <Filter>Resource Files\Models</Filter>
+    </Object>
+    <Object Include="models\sphere.obj">
+      <Filter>Resource Files\Models</Filter>
+    </Object>
+    <Object Include="models\arrow.obj">
+      <Filter>Resource Files\Models</Filter>
+    </Object>
   </ItemGroup>
 </Project>
