@@ -76,6 +76,10 @@ void DebugWindow::drawRenderTab(Scene& scene) {
 		TableNextColumn();
 		SliderFloat("Particle Radius", &scene.fluidSimComponent.shaderPipelineComponent.particleRenderRadius, 0.0f, MAX_PARTICLE_RENDER_RADIUS);
 
+		TableNextRow();
+		TableNextColumn();
+		Checkbox("Draw Velocity", &scene.fluidSimComponent.shaderPipelineComponent.drawVelocityVisualization);
+
 		EndTable();
 	}
 

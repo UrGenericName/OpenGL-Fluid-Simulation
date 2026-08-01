@@ -197,6 +197,7 @@
     <ClCompile Include="src\DebugWindow.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ShaderPipelineComponent.h" />
     <ClInclude Include="src\Lines.h" />
     <ClInclude Include="src\FluidSimComponent.h" />
@@ -230,12 +231,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-	<ItemGroup>
-		<!-- Drop everything in this folder from the compiler and linker queues -->
-		<ClCompile Remove="models\**\*" />
-		<Object Remove="models\**\*" />
-
-		<!-- Keep the files visible in Solution Explorer without building them -->
-		<None Include="models\**\*" />
-	</ItemGroup>
+  <ItemGroup>
+    <!-- Drop everything in this folder from the compiler and linker queues -->
+    <ClCompile Remove="models\**\*" />
+    <Object Remove="models\**\*" />
+    <!-- Keep the files visible in Solution Explorer without building them -->
+    <None Include="models\**\*" />
+  </ItemGroup>
 </Project>

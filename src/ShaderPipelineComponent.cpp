@@ -34,6 +34,7 @@ void ShaderPipelineComponent::Draw_Particles(Camera& camera, Mesh& innerCage, Me
 	generateParticleShaderUniforms(camera, particleCount, outerCage.scale);
 
 	outerCage.Draw(*particleShader);
+
 }
 
 void ShaderPipelineComponent::Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox) {
@@ -51,7 +52,7 @@ void ShaderPipelineComponent::Draw_BoundingBoxes(Camera& camera, Lines& innerBou
 
 }
 
-void ShaderPipelineComponent::Draw_Meshes(Camera& camera, vector<Mesh*>& meshCollection) {
+void ShaderPipelineComponent::Draw_Meshes(Camera& camera, vector<Mesh*>& meshCollection, vector<Particle>& particles) {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -62,8 +63,22 @@ void ShaderPipelineComponent::Draw_Meshes(Camera& camera, vector<Mesh*>& meshCol
 	camera.updateMatrix(*meshShader);
 	generateMeshShaderUniforms(camera);
 
-	for (auto mesh : meshCollection) {
+	for (const auto& mesh : meshCollection) {
+
 		mesh->Draw(*meshShader);
+
+	}
+
+	if (drawVelocityVisualization) {
+
+		for (const auto& particle : particles) {
+
+			arrow.position = particle.position;
+			arrow.tint = vec3(particle.density, 0.0f, 1.0f - particle.density);
+			arrow.Draw(*meshShader);
+
+		}
+
 	}
 
 }

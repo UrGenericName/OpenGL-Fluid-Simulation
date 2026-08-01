@@ -2,20 +2,12 @@
 
 #include <vector>
 #include <glm/glm.hpp>
+#include "Particle.h"
 #include "Mesh.h"
 #include "Lines.h"
 #include "ShaderPipelineComponent.h"
 
 using namespace glm;
-
-struct Particle {
-
-	vec3 position;
-	vec3 velocity;
-	float density;
-	const float mass = 1.0f;
-
-};
 
 class FluidSimComponent {
 public:
@@ -58,7 +50,6 @@ private:
 	Mesh outerCage{ "models/cage.obj" };
 
 	Mesh ball{ "models/sphere.obj", vec3(1.0f, 0.3f, 0.3f) };
-	Mesh arrow{ "models/arrow.obj" };
 
 	std::vector<Mesh*> meshCollection;
 

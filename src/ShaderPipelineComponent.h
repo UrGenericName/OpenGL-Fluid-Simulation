@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Particle.h"
 #include "Mesh.h"
 #include "Lines.h"
 #include "Camera.h"
@@ -9,6 +10,7 @@
 class ShaderPipelineComponent {
 public:
 
+	bool drawVelocityVisualization = true;
 	float particleRenderRadius = 1.0f / 32.0f;
 
 	Shader* meshShader;
@@ -20,13 +22,15 @@ public:
 
 	void Draw_Particles(Camera& camera, Mesh& innerCage, Mesh& outerCage, unsigned int particleCount);
 	void Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox);
-	void Draw_Meshes(Camera& camera, std::vector<Mesh*>& meshCollection);
+	void Draw_Meshes(Camera& camera, std::vector<Mesh*>& meshCollection, std::vector<Particle>& particles);
 
 	void generateParticleSSBO();
 	void updateParticleSSBO(std::vector<glm::vec4> particles);
 	void deleteParticleSSBO();
 
 private:
+
+	Mesh arrow{ "models/arrow.obj" };
 
 	GLuint particleSSBO;
 	

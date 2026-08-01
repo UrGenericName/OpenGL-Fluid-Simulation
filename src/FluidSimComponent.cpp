@@ -102,7 +102,7 @@ void FluidSimComponent::Draw(Camera& camera) {
 	shaderPipelineComponent.updateParticleSSBO(particleSSBO);
 	shaderPipelineComponent.Draw_Particles(camera, innerCage, outerCage, particles.size());
 	shaderPipelineComponent.Draw_BoundingBoxes(camera, innerBoundingBox, outerBoundingBox);
-	shaderPipelineComponent.Draw_Meshes(camera, meshCollection);
+	shaderPipelineComponent.Draw_Meshes(camera, meshCollection, particles);
 
 }
 
