@@ -6,6 +6,8 @@ using namespace glm;
 
 FluidSimComponent::FluidSimComponent() {
 
+	meshCollection.push_back(&ball);
+
 	ball.scale = vec3(2.0f);
 	ball.position.z -= 4.0f;
 
@@ -100,7 +102,7 @@ void FluidSimComponent::Draw(Camera& camera) {
 	shaderPipelineComponent.updateParticleSSBO(particleSSBO);
 	shaderPipelineComponent.Draw_Particles(camera, innerCage, outerCage, particles.size());
 	shaderPipelineComponent.Draw_BoundingBoxes(camera, innerBoundingBox, outerBoundingBox);
-	shaderPipelineComponent.Draw_Mesh(camera, ball);
+	shaderPipelineComponent.Draw_Meshes(camera, meshCollection);
 
 }
 

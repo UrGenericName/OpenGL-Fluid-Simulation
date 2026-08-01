@@ -20,7 +20,7 @@ public:
 
 	void Draw_Particles(Camera& camera, Mesh& innerCage, Mesh& outerCage, unsigned int particleCount);
 	void Draw_BoundingBoxes(Camera& camera, Lines& innerBoundingBox, Lines& outerBoundingBox);
-	void Draw_Mesh(Camera& camera, Mesh& mesh);
+	void Draw_Meshes(Camera& camera, std::vector<Mesh*>& meshCollection);
 
 	void generateParticleSSBO();
 	void updateParticleSSBO(std::vector<glm::vec4> particles);

@@ -60,6 +60,8 @@ private:
 	Mesh ball{ "models/sphere.obj", vec3(1.0f, 0.3f, 0.3f) };
 	Mesh arrow{ "models/arrow.obj" };
 
+	std::vector<Mesh*> meshCollection;
+
 	std::vector<Particle> particles;
 	std::vector<vec4> particleSSBO;
 
