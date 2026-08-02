@@ -106,10 +106,12 @@ void FluidSimComponent::Draw(Camera& camera) {
 
 }
 
-float FluidSimComponent::SmoothingKernel(float r) {
+float FluidSimComponent::SmoothingKernel(vec3 A, vec3 B) {
 
 	const float h = 1.0f;
 	const float normalizationFactor = 315.0f / (64.0f * 3.14159 * pow(h, 9));
+
+	float r = distance(A, B);
 
 	if (r < 0.0f || h < r) return 0.0f;
 
@@ -117,6 +119,20 @@ float FluidSimComponent::SmoothingKernel(float r) {
 
 }
 	
+vec3 FluidSimComponent::SmoothingKernelGradient(vec3 A, vec3 B) {
+
+	const float h = 1.0f;
+	const float normalizationFactor = 315.0f / (64.0f * 3.14159 * pow(h, 9));
+	const float chainRuleConstant = -6.0f * ((h * h) - pow(A.x - B.x, 2) - pow(A.y - B.y, 2) - pow(A.z - B.z, 2));
+
+	float dx = normalizationFactor * chainRuleConstant * (A.x - B.x);
+	float dy = normalizationFactor * chainRuleConstant * (A.y - B.y);
+	float dz = normalizationFactor * chainRuleConstant * (A.z - B.z);
+
+	return vec3(dx, dy, dz);
+
+}
+
 float FluidSimComponent::GetDensity(vec3 position) {
 
 	float density = 0.0f;
@@ -125,11 +141,27 @@ float FluidSimComponent::GetDensity(vec3 position) {
 
 		if (particle.position == position) continue;
 
-		density += particle.mass * SmoothingKernel( distance(particle.position, position) );
+		density += particle.mass * SmoothingKernel(position, particle.position);
 
 	}
 
 	return density;
+
+}
+
+vec3 FluidSimComponent::GetPressureForce(vec3 position) {
+
+	vec3 pressure{ 0.0f };
+
+	for (const Particle& particle : particles) {
+
+		if (particle.position == position) continue;
+
+		pressure += particle.mass * SmoothingKernelGradient(position, particle.position) * 0.001f;
+
+	}
+
+	return pressure;
 
 }
 
@@ -147,7 +179,8 @@ void FluidSimComponent::SimulateTimeStep(float timeStep) {
 		// DENSITY
 		particle.density = GetDensity(particle.position);
 
-
+		// PRESSURE
+		particle.velocity += GetPressureForce(particle.position);
 
 		vec3 nextPosition = particle.position + particle.velocity * timeStep;
 

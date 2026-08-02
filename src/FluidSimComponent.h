@@ -56,8 +56,10 @@ private:
 	std::vector<Particle> particles;
 	std::vector<vec4> particleSSBO;
 
-	float SmoothingKernel(float r);
+	float SmoothingKernel(vec3 A, vec3 B);
+	vec3 SmoothingKernelGradient(vec3 A, vec3 B);
 	float GetDensity(vec3 position);
+	vec3 GetPressureForce(vec3 position);
 	void SimulateTimeStep(float timeStep);
 
 };
