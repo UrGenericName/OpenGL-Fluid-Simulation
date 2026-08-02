@@ -40,6 +40,8 @@ public:
 	glm::mat4 getRotationMatrix();
 	glm::mat4 getScaleMatrix();
 
+	static glm::vec3 angleFromVector(glm::vec3 vector);
+
 private:
 
 	VAO VAO;

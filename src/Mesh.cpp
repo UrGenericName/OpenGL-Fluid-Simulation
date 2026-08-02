@@ -8,9 +8,10 @@
 #include <fstream>
 #include <iostream>
 
+using namespace glm;
 using namespace std;
 
-Mesh::Mesh(string fileName, glm::vec3 importColor, float i_emissive) {
+Mesh::Mesh(string fileName, vec3 importColor, float i_emissive) {
 
 	assert(importObj(fileName, importColor));
 	MeshSetup();
@@ -70,10 +71,10 @@ void Mesh::Draw(Shader& shader) {
 	VAO.Bind();
 
 	GLuint modelMatrixNoTranslationLoc = glGetUniformLocation(shader.ID, "u_modelMatrixNoTranslation");
-	glUniformMatrix4fv(modelMatrixNoTranslationLoc, 1, GL_FALSE, glm::value_ptr(getRotationMatrix() * getScaleMatrix()));
+	glUniformMatrix4fv(modelMatrixNoTranslationLoc, 1, GL_FALSE, value_ptr(getRotationMatrix() * getScaleMatrix()));
 
 	GLuint modelMatrixLoc = glGetUniformLocation(shader.ID, "u_modelMatrix");
-	glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, glm::value_ptr(getModelMatrix()));
+	glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, value_ptr(getModelMatrix()));
 
 	GLuint tintUniformLoc = glGetUniformLocation(shader.ID, "u_tint");
 	glUniform3f(tintUniformLoc, tint.x, tint.y, tint.z);
@@ -84,7 +85,7 @@ void Mesh::Draw(Shader& shader) {
 
 }
 
-bool Mesh::importObj(string fileName, glm::vec3 importColor) {
+bool Mesh::importObj(string fileName, vec3 importColor) {
 
 	this->fileName = fileName;
 	this->tint = importColor;
@@ -96,9 +97,9 @@ bool Mesh::importObj(string fileName, glm::vec3 importColor) {
 		vertices.clear();	// deletes all data in vertices/indices
 		indices.clear();	
 
-		std::vector<glm::vec4> parsedVertices;
-		std::vector<glm::vec4> parsedNormals;
-		std::vector<glm::vec2> parsedUVs;
+		std::vector<vec4> parsedVertices;
+		std::vector<vec4> parsedNormals;
+		std::vector<vec2> parsedUVs;
 
 		string line;
 
@@ -135,7 +136,7 @@ bool Mesh::importObj(string fileName, glm::vec3 importColor) {
 				}
 
 				// for some reason we have to invert the y
-				parsedVertices.push_back(glm::vec4(stof(x), -stof(y), stof(z), 1.0f));
+				parsedVertices.push_back(vec4(stof(x), -stof(y), stof(z), 1.0f));
 				continue;
 			}
 
@@ -168,7 +169,7 @@ bool Mesh::importObj(string fileName, glm::vec3 importColor) {
 
 				}
 
-				parsedNormals.push_back(glm::vec4(stof(x), -stof(y), stof(z), 0.0f));
+				parsedNormals.push_back(vec4(stof(x), -stof(y), stof(z), 0.0f));
 				continue;
 			}
 
@@ -192,7 +193,7 @@ bool Mesh::importObj(string fileName, glm::vec3 importColor) {
 					v += line[i++];
 				}
 
-				parsedUVs.push_back(glm::vec2(stof(u), stof(v)));
+				parsedUVs.push_back(vec2(stof(u), stof(v)));
 				continue;
 			}
 
@@ -230,7 +231,7 @@ bool Mesh::importObj(string fileName, glm::vec3 importColor) {
 					int UVIndex = stoi(faceIndicesParse[1]) - 1;
 					int normalIndex = stoi(faceIndicesParse[2]) - 1;
 
-					Vertex constructedOpenGLVertex(parsedVertices[vertexIndex], glm::vec4(tint, 1.0f), parsedNormals[normalIndex], parsedUVs[UVIndex]);
+					Vertex constructedOpenGLVertex(parsedVertices[vertexIndex], vec4(tint, 1.0f), parsedNormals[normalIndex], parsedUVs[UVIndex]);
 					//printf("{ [%f, %f, %f], [%f, %f, %f], [%f, %f] }\n", constructedOpenGLVertex.position.x, constructedOpenGLVertex.position.y, constructedOpenGLVertex.position.z, constructedOpenGLVertex.normal.x, constructedOpenGLVertex.normal.y, constructedOpenGLVertex.normal.z, constructedOpenGLVertex.texUV.x, constructedOpenGLVertex.texUV.y);
 					vertices.push_back(constructedOpenGLVertex);
 
@@ -256,7 +257,7 @@ void Mesh::updateBuffers() {
 
 
 	for (int i = 0; i < vertices.size(); ++i) {
-		vertices[i].color = glm::vec4(tint, 1.0f);
+		vertices[i].color = vec4(tint, 1.0f);
 	}
 
 	VBOptr->Update(vertices); // updates the vertices stored in the VBO
@@ -264,14 +265,14 @@ void Mesh::updateBuffers() {
 
 }
 
-glm::mat4 Mesh::getModelMatrix() {
+mat4 Mesh::getModelMatrix() {
 
 	return getTranslationMatrix() * getRotationMatrix() * getScaleMatrix();
 }
 
-glm::mat4 Mesh::getTranslationMatrix() {
+mat4 Mesh::getTranslationMatrix() {
 
-	glm::mat4 translationMatrix{
+	mat4 translationMatrix{
 		1.0f,		0.0f,		0.0f,		0.0f,
 		0.0f,		1.0f,		0.0f,		0.0f,
 		0.0f,		0.0f,		1.0f,		0.0f,
@@ -281,13 +282,13 @@ glm::mat4 Mesh::getTranslationMatrix() {
 	return translationMatrix;
 }
 
-glm::mat4 Mesh::getRotationMatrix() {
+mat4 Mesh::getRotationMatrix() {
 
 	float cosTheta, sinTheta;
 
 	cosTheta = cos(rotation.x);
 	sinTheta = sin(rotation.x);
-	glm::mat4 rotationX{
+	mat4 rotationX{
 		1.0f,	0.0f,		0.0f,		0.0f,
 		0.0f,	cosTheta,	sinTheta,	0.0f,
 		0.0f,	-sinTheta,	cosTheta,	0.0f,
@@ -296,7 +297,7 @@ glm::mat4 Mesh::getRotationMatrix() {
 
 	cosTheta = cos(rotation.y);
 	sinTheta = sin(rotation.y);
-	glm::mat4 rotationY{
+	mat4 rotationY{
 		cosTheta,	0.0f,	-sinTheta,	0.0f,
 		0.0f,		1.0f,	0.0f,		0.0f,
 		sinTheta,	0.0f,	cosTheta,	0.0f,
@@ -305,21 +306,21 @@ glm::mat4 Mesh::getRotationMatrix() {
 
 	cosTheta = cos(rotation.z);
 	sinTheta = sin(rotation.z);
-	glm::mat4 rotationZ{
+	mat4 rotationZ{
 		cosTheta,	sinTheta,	0.0f,	0.0f,
 		-sinTheta,	cosTheta,	0.0f,	0.0f,
 		0.0f,		0.0f,		1.0f,	0.0f,
 		0.0f,		0.0f,		0.0f,	1.0f
 	};
 
-	glm::mat4 rotationMatrix{ rotationZ * rotationY * rotationX };
+	mat4 rotationMatrix{ rotationZ * rotationY * rotationX };
 
 	return rotationMatrix;
 }
 
-glm::mat4 Mesh::getScaleMatrix() {
+mat4 Mesh::getScaleMatrix() {
 
-	glm::mat4 scaleMatrix{
+	mat4 scaleMatrix{
 		scale.x,	0.0f,		0.0f,		0.0f,
 		0.0f,		scale.y,	0.0f,		0.0f,
 		0.0f,		0.0f,		scale.z,	0.0f,
@@ -327,5 +328,23 @@ glm::mat4 Mesh::getScaleMatrix() {
 	};
 
 	return scaleMatrix;
+
+}
+
+vec3 Mesh::angleFromVector(vec3 vector) {
+
+	vec3 unitV = normalize(vector);
+
+	float pitch = -asin(clamp(unitV.z, -1.0f, 1.0f));
+	float yaw = 0.0f;
+
+	if (abs(unitV.z) < 0.9999f) {
+		yaw = atan2(unitV.y, unitV.x);
+	}
+	else {
+		yaw = 0.0f;
+	}
+
+	return vec3(0.0f, pitch, yaw);
 
 }

@@ -74,6 +74,8 @@ void ShaderPipelineComponent::Draw_Meshes(Camera& camera, vector<Mesh*>& meshCol
 		for (const auto& particle : particles) {
 
 			arrow.position = particle.position;
+			arrow.rotation = Mesh::angleFromVector(particle.velocity);
+			arrow.scale = vec3(length(particle.velocity) / 500.0f) * (particleRenderRadius / DEFAULT_PARTICLE_RENDER_RADIUS);
 			arrow.tint = vec3(particle.density, 0.0f, 1.0f - particle.density);
 			arrow.Draw(*meshShader);
 

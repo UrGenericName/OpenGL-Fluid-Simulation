@@ -6,12 +6,13 @@
 #include "Camera.h"
 
 #define MAX_PARTICLES 4096
+#define DEFAULT_PARTICLE_RENDER_RADIUS (1.0f / 32.0f)
 
 class ShaderPipelineComponent {
 public:
 
 	bool drawVelocityVisualization = true;
-	float particleRenderRadius = 1.0f / 32.0f;
+	float particleRenderRadius = DEFAULT_PARTICLE_RENDER_RADIUS;
 
 	Shader* meshShader;
 	Shader* particleShader;
